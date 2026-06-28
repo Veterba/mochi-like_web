@@ -1,48 +1,17 @@
 import { useState } from "react"
 
-import Burger from "../components/Burger.jsx"
+import { NavLinkRight, NavLinkLeft } from "../components/Navlinks.jsx"
 
 function Navbar() {
 
-  const [openBurger, setBurgerOpen] = useState(false) 
-
-  const toggleBruger = () => {
-    setBurgerOpen(!openBurger)
-  }
-
-
   return (
-    <nav>
-      <div>
-        <ul>
-          {['home', 'about'].map((item) => (
-            <li className="app__flex p-text" key={`link-${item}`}>
-              <div />
-              <a href={`#${item}`}>{item}</a>
-            </li>
-          ))} 
-        </ul>
-      </div>
-
-      <div>
+    <nav className="flex justify-between border-b-1 py-4 px-12">
+      <NavLinkLeft />
+      <div className="mx-auto w-30">
         <img src="" alt=""/>
+        <h1>Logo</h1>
       </div>
-
-      <div>
-        <ul>
-          {['auth', 'blog'].map((item) => (
-            <li className="app__flex p-text" key={`link-${item}`}>
-              <div />
-              <a href={`#${item}`}>{item}</a>
-            </li>
-          ))} 
-        </ul>
-      </div>
-
-      <div onClick={toggleBruger}>
-        <Burger />
-      </div>
-    
+      <NavLinkRight />
     </nav>
   )
 }
