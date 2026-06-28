@@ -8,7 +8,7 @@ function PopUp({ isOpen, onClose, children }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md bg-white p-12 shadow-l"
       >
         <button type="button"
           onClick={onClose}
