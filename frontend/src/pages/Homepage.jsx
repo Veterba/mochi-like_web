@@ -1,14 +1,15 @@
-
-import Navbar from '../sections/Navbar.jsx' 
-import Card from '../sections/Card.jsx'
+import Navbar from '../sections/Navbar.jsx'
+import Hero from '../sections/Hero.jsx'
+import LangCards from '../sections/LangCards.jsx'
 
 function Homepage() {
   return (
-    <div className="bg-black text-white">
+    <div>
       <Navbar />
-      <Card /> 
+      <Hero />
+      <LangCards />
     </div>
   )
-} 
+}
 
 export default Homepage

@@ -4,7 +4,9 @@ import Homepage from './pages/Homepage.jsx'
 function App() {
   return (
     <>
-      <Homepage />
+      <div className="bg-black text-white">
+        <Homepage />
+      </div>
     </>
   )
 }

@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+  --color-ink: #190019;
+  --color-indigo: #2B124C;
+  --color-plum: #522B5B;
+  --color-mauve: #854F6C;
+  --color-rose: #DFB6B2;
+  --color-cream: #FBE4D8;
+}

@@ -2,7 +2,7 @@ function NavLinkLeft() {
   return (
     <div className="">
         <ul className="flex gap-12">
-        {['home', 'app'].map((item) => (
+        {['home', 'content'].map((item) => (
           <li className="app__flex p-text" key={`link-${item}`}>
             <div />
             <a href={`#${item}`}>{item}</a>
@@ -13,16 +13,20 @@ function NavLinkLeft() {
   )
 }
 
-function NavLinkRight() {
+function NavLinkRight({ onAuthClick }) {
   return(
     <div>
       <ul className="flex gap-12">
         {['auth', 'blog'].map((item) => (
           <li className="app__flex p-text" key={`link-${item}`}>
             <div />
-            <a href={`#${item}`}>{item}</a>
+            {item === 'auth' ? (
+              <button type="button" onClick={onAuthClick}>{item}</button>
+            ) : (
+              <a href={`#${item}`}>{item}</a>
+            )}
           </li>
-        ))} 
+        ))}
       </ul>
     </div>
   )
