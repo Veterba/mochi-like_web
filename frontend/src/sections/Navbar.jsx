@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
 import NavLinkRight from "../components/Navlinks.jsx"
 import Burger from "../components/Burger.jsx"
@@ -15,9 +16,9 @@ function Navbar({ sticky = false }) {
     >
       <Burger />
       <div className="mx-auto w-30">
-        <a href="" className="text-center">
+        <Link to="/" className="text-center">
           <h1>logo</h1>
-        </a>
+        </Link>
       </div>
       <NavLinkRight onAuthClick={() => setIsAuthOpen(true)} />
       <Auth isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />

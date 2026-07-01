@@ -3,7 +3,6 @@ import { Link } from "react-router-dom"
 
 const items = [
   { label: "languages" },
-  { label: "shuffle" },
   { label: "flashcards", to: "/flashcards" },
   { label: "profile" },
 ]
