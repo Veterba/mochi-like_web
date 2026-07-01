@@ -33,14 +33,14 @@ function Burger() {
                   <Link
                     to={item.to}
                     onClick={() => setIsOpen(false)}
-                    className="block w-full px-2 py-2 text-left text-text hover:bg-text hover:text-background"
+                    className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
                   >
                     {item.label}
                   </Link>
                 ) : (
                   <button
                     type="button"
-                    className="w-full px-2 py-2 text-left text-text hover:bg-text hover:text-background"
+                    className="w-full px-6 py-2 text-left text-text hover:bg-text hover:text-background"
                   >
                     {item.label}
                   </button>

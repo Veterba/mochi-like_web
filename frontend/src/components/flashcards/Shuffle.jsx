@@ -1,5 +1,8 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { XIcon } from "./Icons.jsx"
+
+const THRESHOLD = 120 // px to commit a swipe
+const CLICK_MAX = 6 // px under which a release counts as a click (flip)
 
 function shuffleArray(arr) {
   const a = [...arr]
@@ -13,20 +16,64 @@ function shuffleArray(arr) {
 function Shuffle({ topicName, cards, onClose }) {
   const [queue, setQueue] = useState(() => shuffleArray(cards))
   const [buffer, setBuffer] = useState([])
+  const [flipped, setFlipped] = useState(false)
+  const [dx, setDx] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const [animating, setAnimating] = useState(false)
+  const dragging = useRef(false)
+  const startX = useRef(0)
   const current = queue[0]
 
   // toBuffer = true -> marked red (don't know), re-queued for another pass.
-  const advance = (toBuffer) => {
-    const rest = queue.slice(1)
-    const nextBuffer = toBuffer ? [...buffer, current] : buffer
-    if (rest.length === 0 && nextBuffer.length > 0) {
-      setQueue(shuffleArray(nextBuffer))
-      setBuffer([])
-    } else {
-      setQueue(rest)
-      setBuffer(nextBuffer)
-    }
+  // Fly the current card off-screen, then swap in the next one.
+  const commit = (toBuffer) => {
+    setAnimating(true)
+    setDx(toBuffer ? -800 : 800)
+    setTimeout(() => {
+      const rest = queue.slice(1)
+      const nextBuffer = toBuffer ? [...buffer, current] : buffer
+      if (rest.length === 0 && nextBuffer.length > 0) {
+        setQueue(shuffleArray(nextBuffer))
+        setBuffer([])
+      } else {
+        setQueue(rest)
+        setBuffer(nextBuffer)
+      }
+      setFlipped(false)
+      setDx(0)
+      setAnimating(false)
+    }, 350)
   }
+
+  const onPointerDown = (e) => {
+    if (animating) return
+    dragging.current = true
+    setIsDragging(true)
+    startX.current = e.clientX
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+  const onPointerMove = (e) => {
+    if (!dragging.current) return
+    setDx(e.clientX - startX.current)
+  }
+  const onPointerUp = () => {
+    if (!dragging.current) return
+    dragging.current = false
+    setIsDragging(false)
+    if (dx > THRESHOLD) commit(false) // know
+    else if (dx < -THRESHOLD) commit(true) // don't know
+    else if (Math.abs(dx) < CLICK_MAX) {
+      setFlipped((f) => !f)
+      setDx(0)
+    } else setDx(0)
+  }
+
+  const intent = dx > 40 ? "know" : dx < -40 ? "dont" : null
+  const borderColor =
+    intent === "know" ? "border-accent-3" : intent === "dont" ? "border-accent-2" : "border-borders"
+  // Fill the card with the side color, proportional to how far it's pulled.
+  const tint = Math.min(Math.abs(dx) / THRESHOLD, 1)
+  const fill = dx > 0 ? `rgba(79,104,21,${tint})` : dx < 0 ? `rgba(163,30,33,${tint})` : "transparent"
 
   return (
     <div
@@ -44,25 +91,29 @@ function Shuffle({ topicName, cards, onClose }) {
 
         {current ? (
           <>
-            <div className="flex aspect-[3/2] items-center justify-center border-2 border-borders text-xl font-bold">
-              {current.label}
+            <div className="mb-2 flex justify-between text-xs font-bold uppercase">
+              <span className={intent === "dont" ? "text-accent-2" : "text-gray"}>← Don&apos;t know</span>
+              <span className={intent === "know" ? "text-accent-3" : "text-gray"}>Know →</span>
             </div>
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => advance(true)}
-                className="border-2 border-accent-2 py-3 font-bold uppercase text-accent-2 hover:bg-accent-2 hover:text-background"
-              >
-                Don&apos;t know
-              </button>
-              <button
-                type="button"
-                onClick={() => advance(false)}
-                className="border-2 border-accent-3 py-3 font-bold uppercase text-accent-3 hover:bg-accent-3 hover:text-background"
-              >
-                Know
-              </button>
+            <div
+              key={current.id}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              style={{
+                transform: `translateX(${dx}px) rotate(${dx * 0.04}deg)`,
+                transition: isDragging ? "background-color 0.08s linear" : "transform 0.35s ease, background-color 0.2s",
+                backgroundColor: fill,
+                color: tint > 0.5 ? "#F9F7F5" : undefined,
+                touchAction: "none",
+              }}
+              className={`flex aspect-[3/2] cursor-grab select-none items-center justify-center border-2 px-6 text-center text-xl font-bold ${borderColor}`}
+            >
+              {flipped ? current.back || "—" : current.front}
             </div>
+            <p className="mt-2 text-center text-xs text-gray">
+              {flipped ? "back" : "front"} · click to flip · drag to sort
+            </p>
           </>
         ) : (
           <div className="flex flex-col items-center gap-4 py-10">
@@ -83,7 +134,7 @@ function Shuffle({ topicName, cards, onClose }) {
           <div className="mt-2 flex flex-wrap gap-2">
             {buffer.map((c) => (
               <span key={c.id} className="border border-accent-2 px-2 py-1 text-xs text-accent-2">
-                {c.label}
+                {c.front}
               </span>
             ))}
           </div>
