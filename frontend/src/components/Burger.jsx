@@ -1,4 +1,12 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
+
+const items = [
+  { label: "languages" },
+  { label: "shuffle" },
+  { label: "flashcards", to: "/flashcards" },
+  { label: "profile" },
+]
 
 function Burger() {
   const [isOpen, setIsOpen] = useState(false)
@@ -20,14 +28,24 @@ function Burger() {
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
           <ul className="absolute left-0 top-full z-50 mt-4 border border-borders bg-background">
-            {["languages", "shuffle", "profile"].map((item) => (
-              <li key={item}>
-                <button
-                  type="button"
-                  className="w-full px-2 py-2 text-left text-text hover:bg-text hover:text-background"
-                >
-                  {item}
-                </button>
+            {items.map((item) => (
+              <li key={item.label}>
+                {item.to ? (
+                  <Link
+                    to={item.to}
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full px-2 py-2 text-left text-text hover:bg-text hover:text-background"
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    className="w-full px-2 py-2 text-left text-text hover:bg-text hover:text-background"
+                  >
+                    {item.label}
+                  </button>
+                )}
               </li>
             ))}
           </ul>
