@@ -1,10 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #190019;
-  --color-indigo: #2B124C;
-  --color-plum: #522B5B;
-  --color-mauve: #854F6C;
-  --color-rose: #DFB6B2;
-  --color-cream: #FBE4D8;
+  
+  /* black colors */
+  --color-text: #1B1717; /* was color-inc */
+  --color-borders: #1c1e24;
+  --color-second-borders: #151515;
+
+  /* Gray colors */
+  --color-gray: #989c9a;
+  --color-second-gray: #D8D5DB;
+
+  /* white colors */
+  --color-background: #F9F7F5; /* was color-paper */
+  --color-second-background: #787878; /* was color-grey */
+  --color-third-background: #EFEFEF;
+  --color-accent-background: #EDEBDD;
+
+  /* accents */
+  --color-accent-1: #d29f22;
+  --color-accent-2: #A31E21;
+  --color-accent-3: #4F6815;
+  --color-accent-4: #0A9396;
+  --color-accent-5: #F72585;
+  --color-accent-6: #3A0CA3;
+
+  /* animation */
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
 }

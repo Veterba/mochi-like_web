@@ -1,16 +1,16 @@
-function LangCards() {
-  const langs = ["Norwegian", "English", "German"]
+import { languages, accents } from "../assets/data.js"
 
+function LangCards() {
   return (
-    <section className="border-t border-black bg-white px-6 py-24 text-black">
-      <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3">
-        {langs.map((lang) => (
+    <section className="flex gap-6 overflow-hidden border-t border-borders bg-background py-16">
+      <div className="flex w-max animate-marquee">
+        {[...languages, ...languages].map((name, i) => (
           <button
-            key={lang}
+            key={i}
             type="button"
-            className="border border-black px-6 py-16 text-2xl font-bold uppercase tracking-tight transition-colors hover:bg-black hover:text-white"
+            className={`mr-6 shrink-0 border-2 ${accents[i % accents.length]} px-10 py-16 text-2xl font-bold uppercase tracking-tight transition-colors hover:bg-text hover:text-background`}
           >
-            {lang}
+            {name}
           </button>
         ))}
       </div>
