@@ -2,9 +2,9 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 
 const items = [
-  { label: "languages" },
+  { label: "languages", to: "/languages" },
   { label: "flashcards", to: "/flashcards" },
-  { label: "profile" },
+  { label: "profile", to: "/profile" },
 ]
 
 function Burger() {

@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import Homepage from './pages/Homepage.jsx'
 import Flashcards from './pages/Flashcards.jsx'
+import Languages from './pages/Languages.jsx'
+import LanguagePage from './pages/LanguagePage.jsx'
+import Profile from './pages/Profile.jsx'
 
 function App() {
   return (
@@ -10,6 +13,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/flashcards" element={<Flashcards />} />
+          <Route path="/languages" element={<Languages />} />
+          <Route path="/languages/:slug" element={<LanguagePage />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </BrowserRouter>

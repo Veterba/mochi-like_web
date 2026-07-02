@@ -3,6 +3,7 @@ import LanguageFolder from "./LanguageFolder.jsx"
 
 function Sidebar({
   username,
+  avatar,
   query,
   onQueryChange,
   languages,
@@ -18,9 +19,13 @@ function Sidebar({
     <aside className="flex min-h-[calc(100vh-4rem)] w-72 flex-col border-r border-borders bg-background">
       {/* Profile — icon + username */}
       <div className="flex items-center gap-2 border-b border-borders p-3">
-        <span className="flex h-9 w-9 items-center justify-center border border-borders">
-          <ProfileIcon />
-        </span>
+        {avatar ? (
+          <img src={avatar} alt="" className="h-9 w-9 border border-borders object-cover" />
+        ) : (
+          <span className="flex h-9 w-9 items-center justify-center border border-borders">
+            <ProfileIcon />
+          </span>
+        )}
         <span className="text-sm">{username}</span>
       </div>
 

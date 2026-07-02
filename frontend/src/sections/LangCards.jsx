@@ -8,7 +8,7 @@ function LangCards() {
           <button
             key={i}
             type="button"
-            className={`mr-6 shrink-0 border-2 ${accents[i % accents.length]} px-10 py-16 text-2xl font-bold uppercase tracking-tight transition-colors hover:bg-text hover:text-background`}
+            className={`mr-6 shrink-0 border-2 ${accents[i % accents.length]} px-10 py-16 text-2xl font-bold uppercase tracking-tight transition-colors`}
           >
             {name}
           </button>

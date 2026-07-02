@@ -17,7 +17,7 @@ function Navbar({ sticky = false }) {
       <Burger />
       <div className="mx-auto w-30">
         <Link to="/" className="text-center">
-          <h1>logo</h1>
+          <h1>pop up</h1>
         </Link>
       </div>
       <NavLinkRight onAuthClick={() => setIsAuthOpen(true)} />

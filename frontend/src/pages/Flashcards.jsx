@@ -3,6 +3,7 @@ import Navbar from "../sections/Navbar.jsx"
 import Sidebar from "../components/flashcards/Sidebar.jsx"
 import CardsSpace from "../components/flashcards/CardsSpace.jsx"
 import NamePrompt from "../components/flashcards/NamePrompt.jsx"
+import useProfile from "../hooks/useProfile.js"
 
 // Placeholder client-side model — swap for backend/db data + API calls later.
 // Language folders start with no topics; topics are added by the user.
@@ -26,6 +27,7 @@ function filterLanguages(langs, query) {
 }
 
 function Flashcards() {
+  const { nickname, avatar } = useProfile()
   const [languages, setLanguages] = useState(seedLanguages)
   const [selectedTopicId, setSelectedTopicId] = useState(null)
   const [query, setQuery] = useState("")
@@ -97,7 +99,8 @@ function Flashcards() {
       <Navbar sticky />
       <div className="flex">
         <Sidebar
-          username="Guest"
+          username={nickname}
+          avatar={avatar}
           query={query}
           onQueryChange={setQuery}
           languages={visibleLanguages}
