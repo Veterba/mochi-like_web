@@ -1,6 +1,7 @@
-import postgres from 'postgres';
+import 'dotenv/config'
+import postgres from 'postgres'
 
-export const sql = postgres(process.env.DATABASE_URL, {
+export const sql = postgres(process.env.CONNECTION_STRING, {
   max: 10,
-  ssl: { rejectUnauthorized: false },  // Supabase requires SSL
-});
+  ssl: { rejectUnauthorized: false },
+})
