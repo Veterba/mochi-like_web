@@ -8,6 +8,7 @@ import profileRoutes from './routes/profile.routes.js'
 import learningRoutes from './routes/learning.routes.js'
 import activityRoutes from './routes/activity.routes.js'
 import flashcardsRoutes from './routes/flashcards.routes.js'
+import tutorRoutes from './routes/tutor.routes.js'
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.use('/api/profile', profileRoutes)
 app.use('/api/learning', learningRoutes)
 app.use('/api/activity', activityRoutes)
 app.use('/api/flashcards', flashcardsRoutes)
+app.use('/api/tutor', tutorRoutes)
 
 app.use(errorHandler)
 

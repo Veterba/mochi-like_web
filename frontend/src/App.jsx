@@ -6,6 +6,7 @@ import Flashcards from './pages/Flashcards.jsx'
 import Languages from './pages/Languages.jsx'
 import LanguagePage from './pages/LanguagePage.jsx'
 import Profile from './pages/Profile.jsx'
+import Tutor from './pages/Tutor.jsx'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/languages" element={<Languages />} />
             <Route path="/languages/:slug" element={<LanguagePage />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/tutor" element={<Tutor />} />
           </Routes>
         </div>
       </AuthProvider>

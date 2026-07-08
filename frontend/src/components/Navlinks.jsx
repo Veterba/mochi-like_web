@@ -20,6 +20,10 @@ function NavLinkRight({ onAuthClick }) {
         </li>
         <li className="app__flex p-text">
           <div />
+          <Link to="/tutor">tutor</Link>
+        </li>
+        <li className="app__flex p-text">
+          <div />
           <a href="#blog">blog</a>
         </li>
       </ul>
