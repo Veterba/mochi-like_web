@@ -10,7 +10,7 @@ function NavLinkRight({ onAuthClick }) {
         <li className="app__flex p-text">
           <div />
           {user ? (
-            <span className="flex items-center gap-4">
+            <span className="flex items-center gap-12">
               <Link to="/profile">{user.nickname}</Link>
               <button type="button" onClick={logout}>logout</button>
             </span>

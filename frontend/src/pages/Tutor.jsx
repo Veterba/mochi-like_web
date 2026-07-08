@@ -42,22 +42,22 @@ function Tutor() {
       <div className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-6 py-8 md:grid-cols-[240px_1fr]">
 
         {/* chat list */}
-        <aside className="flex flex-col gap-2">
+        <aside className="flex flex-col gap-3">
           <button
             type="button"
             onClick={newChat}
-            className="rounded-lg border border-second-gray bg-background px-4 py-2 text-left font-medium hover:bg-accent-background"
+            className="border border-borders bg-background px-4 py-2 text-left text-sm font-semibold uppercase hover:bg-text hover:text-background"
           >
             + New chat
           </button>
-          <ul className="flex flex-col gap-1 overflow-y-auto">
+          <ul className="flex flex-col overflow-y-auto border border-borders bg-background">
             {chats.map((chat) => (
-              <li key={chat.id} className="group flex items-center">
+              <li key={chat.id} className="group flex items-center border-b border-borders last:border-b-0">
                 <button
                   type="button"
                   onClick={() => setActiveChatId(chat.id)}
-                  className={`flex-1 truncate rounded-lg px-4 py-2 text-left text-sm ${
-                    chat.id === activeChatId ? 'bg-accent-background' : 'hover:bg-background'
+                  className={`flex-1 truncate px-4 py-2 text-left text-sm ${
+                    chat.id === activeChatId ? 'bg-accent-background' : 'hover:bg-third-background'
                   }`}
                 >
                   {chat.title}
@@ -65,7 +65,7 @@ function Tutor() {
                 <button
                   type="button"
                   onClick={() => deleteChat(chat.id)}
-                  className="px-2 text-gray opacity-0 group-hover:opacity-100"
+                  className="px-2 font-bold text-gray opacity-0 hover:text-accent-2 group-hover:opacity-100"
                   aria-label="Delete chat"
                 >
                   ×
@@ -76,7 +76,7 @@ function Tutor() {
         </aside>
 
         {/* conversation */}
-        <section className="flex flex-col rounded-xl border border-second-gray bg-background">
+        <section className="flex flex-col border border-borders bg-background">
           <div className="flex-1 overflow-y-auto p-6">
             {!activeChatId && (
               <p className="py-16 text-center text-gray">
@@ -93,7 +93,7 @@ function Tutor() {
               {messages.map((m) => (
                 <li
                   key={m.id}
-                  className={`max-w-[80%] whitespace-pre-wrap rounded-xl px-4 py-3 text-sm ${
+                  className={`max-w-[80%] whitespace-pre-wrap border border-borders px-4 py-3 text-sm ${
                     m.role === 'user'
                       ? 'self-end bg-accent-background'
                       : 'self-start bg-third-background'
@@ -103,28 +103,28 @@ function Tutor() {
                 </li>
               ))}
               {sending && (
-                <li className="self-start rounded-xl bg-third-background px-4 py-3 text-sm text-gray">
+                <li className="self-start border border-borders bg-third-background px-4 py-3 text-sm text-gray">
                   Tutor is typing…
                 </li>
               )}
             </ul>
-            {error && <p className="mt-4 text-center text-sm text-red-500">{error}</p>}
+            {error && <p className="mt-4 text-center text-sm text-accent-2">{error}</p>}
             <div ref={bottomRef} />
           </div>
 
           {activeChatId && (
-            <form onSubmit={handleSend} className="flex gap-2 border-t border-second-gray p-4">
+            <form onSubmit={handleSend} className="flex gap-3 border-t border-borders p-4">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Write in the language you're learning…"
                 maxLength={4000}
-                className="flex-1 rounded-lg border border-second-gray bg-background px-4 py-2 outline-none"
+                className="flex-1 border border-borders bg-background px-4 py-2 outline-none focus:border-second-borders"
               />
               <button
                 type="submit"
                 disabled={sending || !input.trim()}
-                className="rounded-lg bg-text px-5 py-2 text-background disabled:opacity-40"
+                className="border border-borders bg-text px-5 py-2 text-sm font-semibold uppercase text-background hover:bg-background hover:text-text disabled:opacity-40"
               >
                 Send
               </button>
