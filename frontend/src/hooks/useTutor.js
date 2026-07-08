@@ -11,6 +11,7 @@ export default function useTutor() {
   const [activeChatId, setActiveChatId] = useState(null)
   const [messages, setMessages] = useState([])
   const [sending, setSending] = useState(false)
+  const [assessing, setAssessing] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -62,9 +63,32 @@ export default function useTutor() {
     }
   }, [activeChatId, sending])
 
+  const assessPronunciation = useCallback(async (text, { base64, mimeType }) => {
+    if (!activeChatId || assessing) return
+    setError(null)
+    setAssessing(true)
+    setMessages((prev) => [
+      ...prev,
+      { id: `tmp-assess-${Date.now()}`, role: 'user', content: `[pronunciation attempt]\nsentence: "${text}"` },
+    ])
+    try {
+      const result = await api('/tutor/assess', {
+        method: 'POST',
+        body: { text, audio: base64, mimeType, chatId: activeChatId },
+      })
+      if (result.reply) {
+        setMessages((prev) => [...prev, result.reply])
+      }
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setAssessing(false)
+    }
+  }, [activeChatId, assessing])
+
   return {
     chats, activeChatId, setActiveChatId,
-    messages, sending, error,
-    newChat, deleteChat, sendMessage,
+    messages, sending, assessing, error,
+    newChat, deleteChat, sendMessage, assessPronunciation,
   }
 }

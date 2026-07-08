@@ -62,3 +62,14 @@ alter table users add column if not exists email_verified boolean not null defau
 alter table users add column if not exists verify_code text;
 alter table users add column if not exists verify_expires timestamptz;
 update users set email_verified = true where verify_code is null and email_verified = false;
+
+create table if not exists utterances (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  text text not null,
+  lang text not null default 'en',
+  score int,
+  errors jsonb not null default '[]',
+  created_at timestamptz not null default now()
+);
+create index if not exists utterances_user_idx on utterances (user_id, created_at);
