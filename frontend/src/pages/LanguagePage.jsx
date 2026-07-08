@@ -1,13 +1,15 @@
 import { useParams, Link } from "react-router-dom"
 import Navbar from "../sections/Navbar.jsx"
 import { languages } from "../assets/data.js"
+import { guides } from "../assets/guides/index.js"
 import useLearning from "../hooks/useLearning.js"
 import { useMarkActiveToday } from "../hooks/useActivity.js"
-import EnglishTopics from "../components/languages/EnglishTopics.jsx"
+import LanguageTopics from "../components/languages/LanguageTopics.jsx"
 
 function LanguagePage() {
   const { slug } = useParams()
   const name = languages.find((l) => l.toLowerCase() === slug)
+  const topics = guides[slug]
   const { statuses } = useLearning()
   useMarkActiveToday() // visiting a language page counts as an active day
 
@@ -42,8 +44,8 @@ function LanguagePage() {
           <p className="mt-2 text-sm uppercase tracking-widest text-gray">currently · {status}</p>
         )}
         <div className="mt-10">
-          {slug === "english" ? (
-            <EnglishTopics />
+          {topics ? (
+            <LanguageTopics language={name} topics={topics} />
           ) : (
             <div className="flex min-h-[40vh] items-center justify-center border-2 border-dashed border-borders text-gray">
               {name} learning content — coming soon

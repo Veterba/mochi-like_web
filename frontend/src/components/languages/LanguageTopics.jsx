@@ -1,20 +1,20 @@
-import { englishTopics } from "../../assets/english.js"
 import { accents } from "../../assets/data.js"
 import usePopup from "../../hooks/usePopup.js"
 import Flag from "./Flag.jsx"
 import GrammarPanel from "./GrammarPanel.jsx"
 
-// Flags pinned to a right-side rail; clicking one fills the left with its
-// grammar info. `selection.selected` holds the targeted topic index.
-function EnglishTopics() {
+// Flags pinned to a right-side rail; clicking one fills the left with that
+// topic's lesson. Works for any language with a parsed guide (see
+// assets/guides/index.js). `selection.selected` holds the topic index.
+function LanguageTopics({ language, topics }) {
   const selection = usePopup()
-  const active = selection.isOpen ? englishTopics[selection.selected] : null
+  const active = selection.isOpen ? topics[selection.selected] : null
 
   return (
     <div className="flex min-h-[70vh] gap-10">
-      <div className="flex-1">
+      <div className="flex-1 overflow-y-auto">
         {active ? (
-          <GrammarPanel topic={active} />
+          <GrammarPanel language={language} topic={active} />
         ) : (
           <div className="flex h-full items-center justify-center text-gray">
             Pick a topic on the right →
@@ -22,10 +22,10 @@ function EnglishTopics() {
         )}
       </div>
 
-      <ul className="flex w-2/5 flex-col items-end gap-2 border-r-2 border-borders pr-2">
-        {englishTopics.map((t, i) => (
+      <ul className="flex w-2/5 flex-col items-end gap-2 self-start border-r-2 border-borders pr-2">
+        {topics.map((t, i) => (
           <Flag
-            key={t.title}
+            key={t.slug || t.title}
             index={i}
             topic={t}
             accent={accents[i % accents.length]}
@@ -38,4 +38,4 @@ function EnglishTopics() {
   )
 }
 
-export default EnglishTopics
+export default LanguageTopics
