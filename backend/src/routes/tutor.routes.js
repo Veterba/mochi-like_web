@@ -39,7 +39,12 @@ router.post('/chats/:id/messages', validate(messageSchema), async (req, res, nex
     const reply = await tutor.sendMessage(req.userId, req.params.id, req.body.content)
     if (!reply) return res.status(404).json({ error: 'Chat not found' })
     res.status(201).json(reply)
-  } catch (err) { next(err) }
+  } catch (err) {
+    if (err.status === 429) {
+      return res.status(503).json({ error: 'The tutor is busy right now — try again in a minute.' })
+    }
+    next(err)
+  }
 })
 
 export default router
