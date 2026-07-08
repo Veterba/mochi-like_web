@@ -11,15 +11,19 @@ import LoginScreen from './src/screens/auth/LoginScreen';
 import SignupScreen from './src/screens/auth/SignupScreen';
 import VerifyScreen from './src/screens/auth/VerifyScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import FlashcardsScreen from './src/screens/FlashcardsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import LanguagesHomeScreen from './src/screens/languages/LanguagesHomeScreen';
 import EnglishTopicsScreen from './src/screens/languages/EnglishTopicsScreen';
 import TopicDetailScreen from './src/screens/languages/TopicDetailScreen';
+import FlashcardsHomeScreen from './src/screens/flashcards/FlashcardsHomeScreen';
+import TopicScreen from './src/screens/flashcards/TopicScreen';
+import ShuffleScreen from './src/screens/flashcards/ShuffleScreen';
+import { DecksProvider } from './src/hooks/useDecks';
 
 const AuthStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const LangStack = createNativeStackNavigator();
+const FlashStack = createNativeStackNavigator();
 
 const HEADER_OPTS = {
   headerStyle: { backgroundColor: '#F9F7F5' },
@@ -36,6 +40,18 @@ function LanguagesStack() {
       <LangStack.Screen name="EnglishTopics" component={EnglishTopicsScreen} options={{ title: 'English' }} />
       <LangStack.Screen name="TopicDetail" component={TopicDetailScreen} options={({ route }) => ({ title: route.params?.topic?.title ?? 'Topic' })} />
     </LangStack.Navigator>
+  );
+}
+
+function FlashcardsStack() {
+  return (
+    <DecksProvider>
+      <FlashStack.Navigator screenOptions={{ ...HEADER_OPTS, headerShown: true }}>
+        <FlashStack.Screen name="FlashcardsHome" component={FlashcardsHomeScreen} options={{ title: 'Flashcards' }} />
+        <FlashStack.Screen name="Topic" component={TopicScreen} options={({ route }) => ({ title: route.params?.name ?? 'Topic' })} />
+        <FlashStack.Screen name="Shuffle" component={ShuffleScreen} options={({ route }) => ({ title: route.params?.name ?? 'Shuffle' })} />
+      </FlashStack.Navigator>
+    </DecksProvider>
   );
 }
 
@@ -71,7 +87,7 @@ function AppTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Languages" component={LanguagesStack} />
-      <Tab.Screen name="Flashcards" component={FlashcardsScreen} />
+      <Tab.Screen name="Flashcards" component={FlashcardsStack} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
