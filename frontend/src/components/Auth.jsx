@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 
-function Field({ label, type = 'text', value, onChange }) {
+function Field({ label, type = 'text', value, onChange, ...props }) {
   return (
     <label className="block">
       <span className="mb-1 block text-sm text-gray">{label}</span>
@@ -10,24 +10,60 @@ function Field({ label, type = 'text', value, onChange }) {
         value={value}
         onChange={onChange}
         className="w-full border border-borders bg-background px-4 py-2 text-text outline-none focus:ring-1 focus:ring-text"
+        {...props}
       />
     </label>
   )
 }
 
 function Auth({ isOpen, onClose }) {
-  const { signup, login } = useAuth()
+  const { signup, login, verify, resend } = useAuth()
   const [mode, setMode] = useState('login')
   const [form, setForm] = useState({ identifier: '', email: '', login: '', password: '', verify: '' })
+  const [verifyEmail, setVerifyEmail] = useState('')
+  const [code, setCode] = useState('')
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
+  const [resentMsg, setResentMsg] = useState(false)
 
   const isSignup = mode === 'signup'
+  const isVerify = mode === 'verify'
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value })
+
+  const switchToVerify = (email) => {
+    setVerifyEmail(email)
+    setCode('')
+    setError('')
+    setMode('verify')
+  }
+
+  const handleResend = async () => {
+    try {
+      await resend(verifyEmail)
+      setResentMsg(true)
+      setTimeout(() => setResentMsg(false), 3000)
+    } catch {
+      // silent
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+
+    if (isVerify) {
+      setPending(true)
+      try {
+        await verify(verifyEmail, code)
+        onClose()
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setPending(false)
+      }
+      return
+    }
+
     if (isSignup && form.password !== form.verify) {
       setError('Passwords do not match')
       return
@@ -35,13 +71,24 @@ function Auth({ isOpen, onClose }) {
     setPending(true)
     try {
       if (isSignup) {
-        await signup({ email: form.email, login: form.login, password: form.password, verify: form.verify })
+        const res = await signup({ email: form.email, login: form.login, password: form.password, verify: form.verify })
+        switchToVerify(res.email)
       } else {
         await login({ identifier: form.identifier, password: form.password })
+        onClose()
       }
-      onClose()
     } catch (err) {
-      setError(err.message)
+      if (err.message === 'Email not verified') {
+        const id = form.identifier
+        if (id.includes('@')) {
+          await resend(id).catch(() => {})
+          switchToVerify(id)
+        } else {
+          setError('Email not verified — sign up email required')
+        }
+      } else {
+        setError(err.message)
+      }
     } finally {
       setPending(false)
     }
@@ -69,19 +116,35 @@ function Auth({ isOpen, onClose }) {
         <div className="flex flex-col gap-6">
           <div className="text-center">
             <h2 className="text-2xl font-semibold text-text">
-              {isSignup ? 'Create account' : 'Welcome back'}
+              {isVerify ? 'Verify your email' : isSignup ? 'Create account' : 'Welcome back'}
             </h2>
             <p className="mt-1 text-sm text-gray">
-              {isSignup ? 'Sign up to get started' : 'Log in to continue'}
+              {isVerify
+                ? `We sent a 6-digit code to ${verifyEmail}`
+                : isSignup
+                ? 'Sign up to get started'
+                : 'Log in to continue'}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {isSignup ? (
+            {isVerify ? (
+              <Field
+                label="Verification code"
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+            ) : isSignup ? (
               <>
                 <Field label="Email" type="email" value={form.email} onChange={set('email')} />
                 <Field label="Login" value={form.login} onChange={set('login')} />
-                <Field label="Password" type="password" value={form.password} onChange={set('password')} />
+                <div className="flex flex-col gap-1">
+                  <Field label="Password" type="password" value={form.password} onChange={set('password')} />
+                  <p className="text-xs text-gray">At least 8 characters, one uppercase letter, one lowercase letter and one digit</p>
+                </div>
                 <Field label="Verify password" type="password" value={form.verify} onChange={set('verify')} />
               </>
             ) : (
@@ -98,20 +161,35 @@ function Auth({ isOpen, onClose }) {
               disabled={pending}
               className="mt-2 border border-borders bg-text py-3 font-medium text-background transition hover:bg-background hover:text-text disabled:opacity-50"
             >
-              {isSignup ? 'Sign up' : 'Log in'}
+              {isVerify ? 'Confirm' : isSignup ? 'Sign up' : 'Log in'}
             </button>
+
+            {isVerify && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  className="text-sm text-gray hover:text-text"
+                >
+                  Resend code
+                </button>
+                {resentMsg && <span className="ml-2 text-sm text-gray">Sent!</span>}
+              </div>
+            )}
           </form>
 
-          <p className="text-center text-sm text-gray">
-            {isSignup ? 'Already have an account?' : 'No account yet?'}{' '}
-            <button
-              type="button"
-              onClick={() => setMode(isSignup ? 'login' : 'signup')}
-              className="font-semibold text-text underline-offset-2 hover:underline"
-            >
-              {isSignup ? 'Log in' : 'Sign up'}
-            </button>
-          </p>
+          {!isVerify && (
+            <p className="text-center text-sm text-gray">
+              {isSignup ? 'Already have an account?' : 'No account yet?'}{' '}
+              <button
+                type="button"
+                onClick={() => setMode(isSignup ? 'login' : 'signup')}
+                className="font-semibold text-text underline-offset-2 hover:underline"
+              >
+                {isSignup ? 'Log in' : 'Sign up'}
+              </button>
+            </p>
+          )}
         </div>
       </div>
     </div>

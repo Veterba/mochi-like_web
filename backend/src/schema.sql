@@ -57,3 +57,8 @@ create table if not exists chat_messages (
 );
 
 create index if not exists chat_messages_chat_idx on chat_messages (chat_id, created_at);
+
+alter table users add column if not exists email_verified boolean not null default false;
+alter table users add column if not exists verify_code text;
+alter table users add column if not exists verify_expires timestamptz;
+update users set email_verified = true where verify_code is null and email_verified = false;

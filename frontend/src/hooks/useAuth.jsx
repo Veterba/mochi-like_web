@@ -16,13 +16,23 @@ export function AuthProvider({ children }) {
   }, [])
 
   const signup = async (form) => {
-    const u = await api('/auth/signup', { method: 'POST', body: form })
-    setUser(u)
+    return await api('/auth/signup', { method: 'POST', body: form })
   }
 
   const login = async (form) => {
-    const u = await api('/auth/login', { method: 'POST', body: form })
-    setUser(u)
+    const res = await api('/auth/login', { method: 'POST', body: form })
+    setUser(res.user)
+    return res
+  }
+
+  const verify = async (email, code) => {
+    const res = await api('/auth/verify', { method: 'POST', body: { email, code } })
+    setUser(res.user)
+    return res
+  }
+
+  const resend = async (email) => {
+    return await api('/auth/resend', { method: 'POST', body: { email } })
   }
 
   const logout = async () => {
@@ -31,7 +41,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, ready, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, ready, signup, login, logout, verify, resend }}>
       {children}
     </AuthContext.Provider>
   )
