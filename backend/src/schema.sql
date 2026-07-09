@@ -63,6 +63,9 @@ alter table users add column if not exists verify_code text;
 alter table users add column if not exists verify_expires timestamptz;
 update users set email_verified = true where verify_code is null and email_verified = false;
 
+alter table topics add column if not exists created_at timestamptz not null default now();
+alter table cards add column if not exists created_at timestamptz not null default now();
+
 create table if not exists utterances (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references users(id) on delete cascade,

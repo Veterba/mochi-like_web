@@ -1,37 +1,20 @@
-import { View, Text, ScrollView } from 'react-native';
-
-function ChildItem({ child, depth = 0 }) {
-  const indent = depth * 16;
-  return (
-    <View>
-      <View
-        style={{ marginLeft: indent, borderLeftWidth: 2, borderLeftColor: '#1c1e24', paddingLeft: 12, marginBottom: 8 }}
-      >
-        <Text className="text-text text-sm uppercase tracking-wide">{child.title}</Text>
-      </View>
-      {child.children?.map((grandchild) => (
-        <ChildItem key={grandchild.title} child={grandchild} depth={depth + 1} />
-      ))}
-    </View>
-  );
-}
+import { ScrollView, Text } from 'react-native';
+import GuideMarkdown from '../../components/languages/GuideMarkdown';
+import { accentHex } from '../../assets/data';
 
 export default function TopicDetailScreen({ route }) {
-  const { topic } = route.params;
+  const { topic, language = 'English', accentKey } = route.params;
+  const accent = accentHex[accentKey] ?? '#1c1e24';
 
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 24, paddingTop: 48 }}>
-      <Text className="text-gray text-xs uppercase tracking-widest mb-2">grammar · English</Text>
+    <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 24, paddingBottom: 48 }}>
+      <Text className="text-gray text-xs uppercase tracking-widest mb-2">grammar · {language}</Text>
       <Text className="text-text text-3xl font-black uppercase tracking-tight mb-6">
         {topic.title}
       </Text>
 
-      {topic.children ? (
-        <View>
-          {topic.children.map((child) => (
-            <ChildItem key={child.title} child={child} />
-          ))}
-        </View>
+      {topic.body ? (
+        <GuideMarkdown markdown={topic.body} accent={accent} />
       ) : (
         <Text className="text-gray text-sm">Lesson content coming soon.</Text>
       )}

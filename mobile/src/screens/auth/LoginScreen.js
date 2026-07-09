@@ -22,7 +22,7 @@ export default function LoginScreen({ navigation }) {
     setPending(true);
     try {
       await login({ identifier, password });
-      // auth state change navigates automatically
+      navigation.popToTop(); // back to the tabs, now signed in
     } catch (err) {
       const msg = err.message || 'Login failed';
       if (msg === 'Email not verified' || err.status === 403) {
@@ -93,6 +93,12 @@ export default function LoginScreen({ navigation }) {
             <Text className="text-gray text-center text-sm">
               No account?{' '}
               <Text className="text-text font-bold uppercase">SIGN UP</Text>
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity className="mt-6" onPress={() => navigation.popToTop()}>
+            <Text className="text-gray text-center text-xs uppercase tracking-widest">
+              ← Continue without an account
             </Text>
           </TouchableOpacity>
         </View>

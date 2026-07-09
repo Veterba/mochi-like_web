@@ -4,15 +4,22 @@ import { View, Text, Modal, Pressable, TextInput, TouchableOpacity } from 'react
 export default function CardEditorModal({ visible, onConfirm, onClose }) {
   const [front, setFront] = useState('');
   const [back, setBack] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  const handleConfirm = () => {
-    if (!front.trim()) return;
-    onConfirm(front.trim(), back.trim());
-    setFront('');
-    setBack('');
+  const handleConfirm = async () => {
+    if (!front.trim() || busy) return;
+    setBusy(true);
+    try {
+      await onConfirm(front.trim(), back.trim());
+      setFront('');
+      setBack('');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleClose = () => {
+    if (busy) return;
     setFront('');
     setBack('');
     onClose();
@@ -57,8 +64,11 @@ export default function CardEditorModal({ visible, onConfirm, onClose }) {
             <TouchableOpacity
               className="flex-1 border-2 border-borders py-3 items-center"
               onPress={handleConfirm}
+              disabled={busy}
             >
-              <Text className="text-text text-xs font-bold uppercase tracking-widest">Save</Text>
+              <Text className="text-text text-xs font-bold uppercase tracking-widest">
+                {busy ? 'Saving…' : 'Save'}
+              </Text>
             </TouchableOpacity>
           </View>
         </Pressable>

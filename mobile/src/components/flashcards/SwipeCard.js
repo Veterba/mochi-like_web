@@ -9,6 +9,7 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import * as Haptics from 'expo-haptics';
 
 const THRESHOLD = 120;
 const SCREEN_W = Dimensions.get('window').width;
@@ -17,13 +18,42 @@ const BORDER_NEUTRAL = '#1c1e24';
 const BORDER_KNOW = '#4F6815';
 const BORDER_DONT = '#A31E21';
 
-export default function SwipeCard({ card, flipped, flip, commitKnow, commitDont, buffer, learned }) {
-  const translateX = useSharedValue(0);
+const cardFace = {
+  backgroundColor: '#F9F7F5',
+  borderWidth: 2,
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 24,
+};
 
-  // Reset position when card changes
+// Render with key={seq} from useSwipeDeck: each committed swipe then mounts a
+// fresh instance whose shared values start at 0, so the incoming card can never
+// inherit the previous card's off-screen transform — even when a reshuffle
+// serves the same card id again.
+export default function SwipeCard({ card, next, flipped, flip, commit, buffer, learned }) {
+  const translateX = useSharedValue(0);
+  // True while the fly-out animation runs; blocks pan/tap so a touch can't
+  // cancel the withTiming callback and silently drop the commit.
+  const animating = useSharedValue(false);
+
+  // Fallback for consumers that don't remount via key: at least reset when
+  // the card id changes.
   useEffect(() => {
     translateX.value = 0;
+    animating.value = false;
   }, [card?.id]);
+
+  const commitWithHaptic = (known) => {
+    Haptics.notificationAsync(
+      known ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Warning
+    ).catch(() => {});
+    commit(known);
+  };
+
+  const flipWithHaptic = () => {
+    Haptics.selectionAsync().catch(() => {});
+    flip();
+  };
 
   const cardStyle = useAnimatedStyle(() => ({
     transform: [
@@ -47,16 +77,20 @@ export default function SwipeCard({ card, flipped, flip, commitKnow, commitDont,
 
   const pan = Gesture.Pan()
     .onUpdate((e) => {
+      if (animating.value) return;
       translateX.value = e.translationX;
     })
     .onEnd((e) => {
+      if (animating.value) return;
       if (e.translationX > THRESHOLD) {
+        animating.value = true;
         translateX.value = withTiming(SCREEN_W + 100, { duration: 280 }, (finished) => {
-          if (finished) runOnJS(commitKnow)();
+          if (finished) runOnJS(commitWithHaptic)(true);
         });
       } else if (e.translationX < -THRESHOLD) {
+        animating.value = true;
         translateX.value = withTiming(-(SCREEN_W + 100), { duration: 280 }, (finished) => {
-          if (finished) runOnJS(commitDont)();
+          if (finished) runOnJS(commitWithHaptic)(false);
         });
       } else {
         translateX.value = withSpring(0);
@@ -64,7 +98,8 @@ export default function SwipeCard({ card, flipped, flip, commitKnow, commitDont,
     });
 
   const tap = Gesture.Tap().onEnd(() => {
-    runOnJS(flip)();
+    if (animating.value) return;
+    runOnJS(flipWithHaptic)();
   });
 
   const gesture = Gesture.Exclusive(pan, tap);
@@ -85,30 +120,38 @@ export default function SwipeCard({ card, flipped, flip, commitKnow, commitDont,
         </Animated.Text>
       </View>
 
-      {/* Swipeable card */}
-      <GestureDetector gesture={gesture}>
-        <Animated.View
+      {/* Card stack: next card sits beneath the swipeable one */}
+      <View style={{ width: '100%', aspectRatio: 3 / 2 }}>
+        <View
           style={[
-            {
-              width: '100%',
-              aspectRatio: 3 / 2,
-              backgroundColor: '#F9F7F5',
-              borderWidth: 2,
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 24,
-            },
-            cardStyle,
+            cardFace,
+            { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderColor: '#D8D5DB' },
           ]}
         >
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#1B1717', textAlign: 'center' }}>
-            {flipped ? (card?.back || '—') : (card?.front || '—')}
-          </Text>
-          <Text style={{ fontSize: 10, color: '#989c9a', marginTop: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
-            {flipped ? 'back · tap to flip' : 'tap to flip'}
-          </Text>
-        </Animated.View>
-      </GestureDetector>
+          {next ? (
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#989c9a', textAlign: 'center' }}>
+              {next.front || '—'}
+            </Text>
+          ) : null}
+        </View>
+
+        <GestureDetector gesture={gesture}>
+          <Animated.View
+            style={[
+              cardFace,
+              { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+              cardStyle,
+            ]}
+          >
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#1B1717', textAlign: 'center' }}>
+              {flipped ? (card?.back || '—') : (card?.front || '—')}
+            </Text>
+            <Text style={{ fontSize: 10, color: '#989c9a', marginTop: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
+              {flipped ? 'back · tap to flip' : 'tap to flip'}
+            </Text>
+          </Animated.View>
+        </GestureDetector>
+      </View>
 
       {/* Buffer and learned piles */}
       <View style={{ flexDirection: 'row', marginTop: 24, width: '100%', gap: 12 }}>

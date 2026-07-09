@@ -1,6 +1,4 @@
-import { useState, useRef } from 'react';
-
-const THRESHOLD = 120;
+import { useState } from 'react';
 
 function shuffle(arr) {
   const a = [...arr];
@@ -17,44 +15,37 @@ export default function useSwipeDeck(cards) {
     buffer: [],
     learned: [],
     flipped: false,
+    seq: 0,
   }));
 
-  const current = state.queue[0] ?? null;
-
-  const commitKnow = () => {
+  // known=true → learned pile; known=false → buffer, re-queued for another pass.
+  const commit = (known) => {
     setState((s) => {
       const card = s.queue[0];
+      if (!card) return s;
       const rest = s.queue.slice(1);
-      const learned = [...s.learned, card];
-      if (rest.length === 0 && s.buffer.length > 0) {
-        return { queue: shuffle(s.buffer), buffer: [], learned, flipped: false };
-      }
-      return { queue: rest, buffer: s.buffer, learned, flipped: false };
-    });
-  };
-
-  const commitDont = () => {
-    setState((s) => {
-      const card = s.queue[0];
-      const rest = s.queue.slice(1);
-      const buffer = [...s.buffer, card];
+      const learned = known ? [...s.learned, card] : s.learned;
+      const buffer = known ? s.buffer : [...s.buffer, card];
+      const base = { learned, flipped: false, seq: s.seq + 1 };
       if (rest.length === 0 && buffer.length > 0) {
-        return { queue: shuffle(buffer), buffer: [], learned: s.learned, flipped: false };
+        return { ...base, queue: shuffle(buffer), buffer: [] };
       }
-      return { queue: rest, buffer, learned: s.learned, flipped: false };
+      return { ...base, queue: rest, buffer };
     });
   };
 
   const flip = () => setState((s) => ({ ...s, flipped: !s.flipped }));
 
   return {
-    current,
+    current: state.queue[0] ?? null,
+    // Card known to come up next; null when the next card is decided by a
+    // reshuffle (or the deck is about to end).
+    next: state.queue[1] ?? null,
     buffer: state.buffer,
     learned: state.learned,
     flipped: state.flipped,
+    seq: state.seq,
     flip,
-    commitKnow,
-    commitDont,
-    THRESHOLD,
+    commit,
   };
 }

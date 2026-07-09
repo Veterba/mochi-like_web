@@ -34,6 +34,7 @@ export default function TopicScreen({ route, navigation }) {
           onPress={() => setShowEditor(true)}
           style={{
             flex: 1,
+            maxWidth: '33.33%',
             margin: 4,
             aspectRatio: 1,
             borderWidth: 2,
@@ -55,6 +56,7 @@ export default function TopicScreen({ route, navigation }) {
         onLongPress={() => confirmDeleteCard(item)}
         style={{
           flex: 1,
+          maxWidth: '33.33%',
           margin: 4,
           aspectRatio: 1,
           borderWidth: 2,

@@ -13,7 +13,7 @@ export default function ShuffleScreen({ route, navigation }) {
   const topic = folders.flatMap((f) => f.topics).find((t) => t.id === topicId);
   const cards = topic?.cards ?? [];
 
-  const { current, buffer, learned, flipped, flip, commitKnow, commitDont } = useSwipeDeck(cards);
+  const { current, next, buffer, learned, flipped, seq, flip, commit } = useSwipeDeck(cards);
 
   if (!current) {
     return (
@@ -34,12 +34,15 @@ export default function ShuffleScreen({ route, navigation }) {
 
   return (
     <View className="flex-1 bg-background">
+      {/* key={seq} remounts after every committed swipe so the incoming card
+          always starts centered (see note in SwipeCard). */}
       <SwipeCard
+        key={seq}
         card={current}
+        next={next}
         flipped={flipped}
         flip={flip}
-        commitKnow={commitKnow}
-        commitDont={commitDont}
+        commit={commit}
         buffer={buffer}
         learned={learned}
       />

@@ -1,6 +1,11 @@
 import * as SecureStore from 'expo-secure-store';
 
-const BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
+// NOTE: the backend defaults to port 4200 (backend/src/index.js). On a real
+// device "localhost" is the phone itself — set EXPO_PUBLIC_API_URL in
+// mobile/.env to your computer's LAN IP, e.g. http://192.168.1.20:4200/api,
+// then restart the dev server with `npx expo start -c` (env vars are baked
+// into the JS bundle at build time; a reload is not enough).
+const BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:4200/api';
 const TOKEN_KEY = 'token';
 
 export async function setToken(token) {
@@ -18,11 +23,21 @@ export async function api(path, { method, body } = {}) {
   if (body) headers['Content-Type'] = 'application/json';
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(BASE + path, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  let res;
+  try {
+    res = await fetch(BASE + path, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (err) {
+    // fetch rejects with a bare "Network request failed" — say which URL so
+    // wrong IP/port in EXPO_PUBLIC_API_URL is diagnosable from the error.
+    throw Object.assign(
+      new Error(`Can't reach the server at ${BASE}. Check that the backend is running and EXPO_PUBLIC_API_URL is correct.`),
+      { cause: err, network: true }
+    );
+  }
 
   if (!res.ok) {
     const json = await res.json().catch(() => ({}));

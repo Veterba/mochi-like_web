@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
 
-export default function VerifyScreen({ route }) {
+export default function VerifyScreen({ route, navigation }) {
   const { email } = route.params || {};
   const { verify, resend } = useAuth();
   const [code, setCode] = useState('');
@@ -22,7 +22,7 @@ export default function VerifyScreen({ route }) {
     setPending(true);
     try {
       await verify(email, code);
-      // success: auth state change navigates automatically
+      navigation.popToTop(); // back to the tabs, now signed in
     } catch (err) {
       setError(err.message || 'Invalid or expired code');
     } finally {

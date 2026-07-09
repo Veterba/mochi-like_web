@@ -1,26 +1,29 @@
 import './global.css';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, ActivityIndicator } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AuthProvider, useAuth } from './src/hooks/useAuth';
 import LoginScreen from './src/screens/auth/LoginScreen';
 import SignupScreen from './src/screens/auth/SignupScreen';
 import VerifyScreen from './src/screens/auth/VerifyScreen';
-import HomeScreen from './src/screens/HomeScreen';
+import TutorScreen from './src/screens/TutorScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import LanguagesHomeScreen from './src/screens/languages/LanguagesHomeScreen';
-import EnglishTopicsScreen from './src/screens/languages/EnglishTopicsScreen';
+import LanguageTopicsScreen from './src/screens/languages/LanguageTopicsScreen';
 import TopicDetailScreen from './src/screens/languages/TopicDetailScreen';
 import FlashcardsHomeScreen from './src/screens/flashcards/FlashcardsHomeScreen';
 import TopicScreen from './src/screens/flashcards/TopicScreen';
 import ShuffleScreen from './src/screens/flashcards/ShuffleScreen';
 import { DecksProvider } from './src/hooks/useDecks';
+import SignInPrompt from './src/components/SignInPrompt';
 
-const AuthStack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const LangStack = createNativeStackNavigator();
 const FlashStack = createNativeStackNavigator();
@@ -37,17 +40,33 @@ function LanguagesStack() {
   return (
     <LangStack.Navigator screenOptions={{ ...HEADER_OPTS, headerShown: true }}>
       <LangStack.Screen name="LanguagesHome" component={LanguagesHomeScreen} options={{ headerShown: false }} />
-      <LangStack.Screen name="EnglishTopics" component={EnglishTopicsScreen} options={{ title: 'English' }} />
+      <LangStack.Screen
+        name="LanguageTopics"
+        component={LanguageTopicsScreen}
+        options={({ route }) => ({ title: route.params?.name ?? 'Language', headerLargeTitle: true })}
+      />
       <LangStack.Screen name="TopicDetail" component={TopicDetailScreen} options={({ route }) => ({ title: route.params?.topic?.title ?? 'Topic' })} />
     </LangStack.Navigator>
   );
 }
 
 function FlashcardsStack() {
+  const { user } = useAuth();
+
+  // Flashcards live on the user's account — guests get a sign-in prompt.
+  if (!user) {
+    return (
+      <SignInPrompt
+        title="Flashcards"
+        message="Your folders, topics and cards are saved to your account. Sign in to start building decks."
+      />
+    );
+  }
+
   return (
     <DecksProvider>
       <FlashStack.Navigator screenOptions={{ ...HEADER_OPTS, headerShown: true }}>
-        <FlashStack.Screen name="FlashcardsHome" component={FlashcardsHomeScreen} options={{ title: 'Flashcards' }} />
+        <FlashStack.Screen name="FlashcardsHome" component={FlashcardsHomeScreen} options={{ title: 'Flashcards', headerLargeTitle: true }} />
         <FlashStack.Screen name="Topic" component={TopicScreen} options={({ route }) => ({ title: route.params?.name ?? 'Topic' })} />
         <FlashStack.Screen name="Shuffle" component={ShuffleScreen} options={({ route }) => ({ title: route.params?.name ?? 'Shuffle' })} />
       </FlashStack.Navigator>
@@ -55,20 +74,17 @@ function FlashcardsStack() {
   );
 }
 
-function AuthNavigator() {
-  return (
-    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="Signup" component={SignupScreen} />
-      <AuthStack.Screen name="Verify" component={VerifyScreen} />
-    </AuthStack.Navigator>
-  );
-}
+const TAB_ICONS = {
+  Tutor: ['chatbubble-ellipses', 'chatbubble-ellipses-outline'],
+  Languages: ['globe', 'globe-outline'],
+  Flashcards: ['albums', 'albums-outline'],
+  Profile: ['person', 'person-outline'],
+};
 
 function AppTabs() {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#F9F7F5',
@@ -83,9 +99,13 @@ function AppTabs() {
           fontSize: 10,
           letterSpacing: 1,
         },
-      }}
+        tabBarIcon: ({ focused, color }) => {
+          const [active, inactive] = TAB_ICONS[route.name] ?? [];
+          return <Ionicons name={focused ? active : inactive} size={20} color={color} />;
+        },
+      })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Tutor" component={TutorScreen} />
       <Tab.Screen name="Languages" component={LanguagesStack} />
       <Tab.Screen name="Flashcards" component={FlashcardsStack} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
@@ -94,7 +114,7 @@ function AppTabs() {
 }
 
 function RootNavigator() {
-  const { user, ready } = useAuth();
+  const { ready } = useAuth();
 
   if (!ready) {
     return (
@@ -104,9 +124,17 @@ function RootNavigator() {
     );
   }
 
+  // Browse-first, like the web app: the tabs are always available and auth
+  // screens are pushed on demand. Account-backed tabs (Flashcards, Profile)
+  // show a SignInPrompt for guests.
   return (
     <NavigationContainer>
-      {user ? <AppTabs /> : <AuthNavigator />}
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        <RootStack.Screen name="Tabs" component={AppTabs} />
+        <RootStack.Screen name="Login" component={LoginScreen} />
+        <RootStack.Screen name="Signup" component={SignupScreen} />
+        <RootStack.Screen name="Verify" component={VerifyScreen} />
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }
@@ -114,9 +142,11 @@ function RootNavigator() {
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider>
-        <RootNavigator />
-      </AuthProvider>
+      <SafeAreaProvider>
+        <AuthProvider>
+          <RootNavigator />
+        </AuthProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

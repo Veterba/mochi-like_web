@@ -15,7 +15,11 @@ export function AuthProvider({ children }) {
         return api('/auth/me');
       })
       .then((u) => setUser(u))
-      .catch(() => clearToken())
+      .catch((err) => {
+        // Drop the token only if the server rejected it — a network failure
+        // (server down, wrong Wi-Fi) must not log the user out.
+        if (!err?.network) clearToken();
+      })
       .finally(() => setReady(true));
   }, []);
 

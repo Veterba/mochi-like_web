@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import useDecks from '../../hooks/useDecks';
+import { useDecks } from '../../hooks/useDecks';
 import NamePromptModal from '../../components/flashcards/NamePromptModal';
 
 export default function FlashcardsHomeScreen({ navigation }) {

@@ -6,11 +6,11 @@ export async function getTree(userId) {
 
   const folderIds = folders.map(f => f.id)
 
-  const topics = await sql`select id, folder_id, name from topics where folder_id in ${sql(folderIds)}`
+  const topics = await sql`select id, folder_id, name from topics where folder_id in ${sql(folderIds)} order by created_at`
   const topicIds = topics.map(t => t.id)
 
   const cards = topicIds.length
-    ? await sql`select id, topic_id, front, back from cards where topic_id in ${sql(topicIds)}`
+    ? await sql`select id, topic_id, front, back from cards where topic_id in ${sql(topicIds)} order by created_at`
     : []
 
   const cardsByTopic = {}

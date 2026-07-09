@@ -3,14 +3,21 @@ import { View, Text, Modal, Pressable, TextInput, TouchableOpacity } from 'react
 
 export default function NamePromptModal({ visible, title, placeholder = 'Name', onConfirm, onClose }) {
   const [value, setValue] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  const handleConfirm = () => {
-    if (!value.trim()) return;
-    onConfirm(value.trim());
-    setValue('');
+  const handleConfirm = async () => {
+    if (!value.trim() || busy) return;
+    setBusy(true);
+    try {
+      await onConfirm(value.trim());
+      setValue('');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleClose = () => {
+    if (busy) return;
     setValue('');
     onClose();
   };
@@ -45,8 +52,11 @@ export default function NamePromptModal({ visible, title, placeholder = 'Name', 
             <TouchableOpacity
               className="flex-1 border-2 border-borders py-3 items-center"
               onPress={handleConfirm}
+              disabled={busy}
             >
-              <Text className="text-text text-xs font-bold uppercase tracking-widest">Confirm</Text>
+              <Text className="text-text text-xs font-bold uppercase tracking-widest">
+                {busy ? 'Saving…' : 'Confirm'}
+              </Text>
             </TouchableOpacity>
           </View>
         </Pressable>

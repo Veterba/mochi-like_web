@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../hooks/useAuth';
 import useProfile from '../hooks/useProfile';
 import useActivity from '../hooks/useActivity';
@@ -7,8 +8,27 @@ import useLearning from '../hooks/useLearning';
 import ActivityHeatmap from '../components/profile/ActivityHeatmap';
 import LearningList from '../components/profile/LearningList';
 import EditProfileModal from '../components/profile/EditProfileModal';
+import SignInPrompt from '../components/SignInPrompt';
 
-export default function ProfileScreen({ navigation }) {
+// Guest gate lives in a wrapper so ProfileInner's hooks only ever run for a
+// signed-in user (early returns between hooks would break the hook order).
+export default function ProfileScreen(props) {
+  const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <SignInPrompt
+        title="Profile"
+        message="Sign in to track your activity streak, learning languages and profile."
+      />
+    );
+  }
+
+  return <ProfileInner {...props} />;
+}
+
+function ProfileInner({ navigation }) {
+  const insets = useSafeAreaInsets();
   const { logout } = useAuth();
   const { nickname, avatar, update } = useProfile();
   const { days } = useActivity();
@@ -25,7 +45,7 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 24, paddingTop: 48 }}>
+    <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 24, paddingTop: insets.top + 24 }}>
       {/* Header card */}
       <View className="border-2 border-borders p-4 mb-4 flex-row items-center gap-4">
         {avatar ? (
