@@ -2,6 +2,14 @@ import en from './en';
 import no from './no';
 import de from './de';
 import es from './es';
+import fr from './fr';
+import it from './it';
+import pt from './pt';
+import ru from './ru';
+import uk from './uk';
+import ja from './ja';
+import zh from './zh';
+import ar from './ar';
 
 // Splits a guide into topics: every `# Heading <!-- slug: x -->` starts a
 // topic; everything until the next `#` is that topic's markdown body.
@@ -30,4 +38,12 @@ export const guides = {
   norwegian: parseGuide(no),
   german: parseGuide(de),
   spanish: parseGuide(es),
+  french: parseGuide(fr),
+  italian: parseGuide(it),
+  portuguese: parseGuide(pt),
+  russian: parseGuide(ru),
+  ukrainian: parseGuide(uk),
+  japanese: parseGuide(ja),
+  chinese: parseGuide(zh),
+  arabic: parseGuide(ar),
 };

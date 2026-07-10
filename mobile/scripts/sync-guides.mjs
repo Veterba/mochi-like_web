@@ -11,7 +11,7 @@ const outDir = join(here, '../src/assets/guides');
 
 mkdirSync(outDir, { recursive: true });
 
-for (const lang of ['en', 'no', 'de', 'es']) {
+for (const lang of ['en', 'no', 'de', 'es', 'fr', 'it', 'pt', 'ru', 'uk', 'ja', 'zh', 'ar']) {
   const md = readFileSync(join(srcDir, `${lang}.md`), 'utf8');
   const body = `// AUTO-GENERATED from frontend/src/assets/guides/${lang}.md — do not edit.\n// Regenerate with: node scripts/sync-guides.mjs\nexport default ${JSON.stringify(md)};\n`;
   writeFileSync(join(outDir, `${lang}.js`), body);
