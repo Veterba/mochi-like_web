@@ -76,3 +76,5 @@ create table if not exists utterances (
   created_at timestamptz not null default now()
 );
 create index if not exists utterances_user_idx on utterances (user_id, created_at);
+
+alter table users add column if not exists cards_learned int not null default 0;

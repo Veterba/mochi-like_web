@@ -78,3 +78,21 @@ export async function deleteCard(userId, id) {
     )
   `
 }
+
+export async function incrementLearned(userId, n) {
+  await sql`update users set cards_learned = cards_learned + ${n} where id = ${userId}`
+}
+
+export async function stats(userId) {
+  const [row] = await sql`
+    select
+      (
+        select count(*)::int from cards c
+        join topics t on t.id = c.topic_id
+        join folders f on f.id = t.folder_id
+        where f.user_id = ${userId}
+      ) as "cardsAdded",
+      (select cards_learned from users where id = ${userId}) as "cardsLearned"
+  `
+  return row ?? { cardsAdded: 0, cardsLearned: 0 }
+}

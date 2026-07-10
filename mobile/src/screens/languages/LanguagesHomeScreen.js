@@ -6,11 +6,13 @@ import { guides } from '../../assets/guides';
 import LangCard from '../../components/languages/LangCard';
 import LangPopup from '../../components/languages/LangPopup';
 import useLearning from '../../hooks/useLearning';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function LanguagesHomeScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const { statuses, setStatus, remove } = useLearning();
-  const [popup, setPopup] = useState(null); // name of the language
+  const [popup, setPopup] = useState(null);
+  const { theme } = useTheme();
 
   const handleSetStatus = (status) => {
     setStatus(popup, status);
@@ -26,11 +28,11 @@ export default function LanguagesHomeScreen({ navigation }) {
   const popupAccent = popupIndex >= 0 ? accentColors[popupIndex % accentColors.length] : 'accent-1';
 
   return (
-    <View className="flex-1 bg-background px-4" style={{ paddingTop: insets.top + 12 }}>
-      <Text className="text-3xl font-bold uppercase text-text tracking-widest mb-1 px-2">
+    <View style={{ flex: 1, backgroundColor: theme.bg, paddingHorizontal: 16, paddingTop: insets.top + 12 }}>
+      <Text style={{ color: theme.text, fontSize: 28, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 4, marginBottom: 4, paddingHorizontal: 8 }}>
         LANGUAGES
       </Text>
-      <Text className="text-gray text-xs uppercase tracking-widest mb-6 px-2">
+      <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 24, paddingHorizontal: 8 }}>
         English, Norwegian, German and Spanish currently available
       </Text>
 
@@ -51,6 +53,7 @@ export default function LanguagesHomeScreen({ navigation }) {
               available={available}
               onPress={() => navigation.navigate('LanguageTopics', { slug, name: item })}
               onDotPress={() => setPopup(item)}
+              theme={theme}
             />
           );
         }}
@@ -64,6 +67,7 @@ export default function LanguagesHomeScreen({ navigation }) {
           onSetStatus={handleSetStatus}
           onRemove={handleRemove}
           onClose={() => setPopup(null)}
+          theme={theme}
         />
       )}
     </View>

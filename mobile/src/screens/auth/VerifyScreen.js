@@ -8,10 +8,12 @@ import {
   Platform,
 } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function VerifyScreen({ route, navigation }) {
   const { email } = route.params || {};
   const { verify, resend } = useAuth();
+  const { theme } = useTheme();
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
@@ -22,7 +24,7 @@ export default function VerifyScreen({ route, navigation }) {
     setPending(true);
     try {
       await verify(email, code);
-      navigation.popToTop(); // back to the tabs, now signed in
+      navigation.popToTop();
     } catch (err) {
       setError(err.message || 'Invalid or expired code');
     } finally {
@@ -43,24 +45,24 @@ export default function VerifyScreen({ route, navigation }) {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-background"
+      style={{ flex: 1, backgroundColor: theme.bg }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View className="flex-1 justify-center px-6">
-        <Text className="text-3xl font-bold uppercase text-text mb-4 tracking-widest">
+      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24 }}>
+        <Text style={{ color: theme.text, fontSize: 28, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 4, marginBottom: 16 }}>
           VERIFY EMAIL
         </Text>
 
-        <Text className="text-gray mb-8 text-sm">
+        <Text style={{ color: theme.subtext, marginBottom: 32, fontSize: 14 }}>
           We sent a 6-digit code to{' '}
-          <Text className="text-text font-bold">{email}</Text>
+          <Text style={{ color: theme.text, fontWeight: 'bold' }}>{email}</Text>
         </Text>
 
-        <View className="border-2 border-borders bg-background mb-6 p-3">
+        <View style={{ borderWidth: 2, borderColor: theme.border, backgroundColor: theme.bg, marginBottom: 24, padding: 12 }}>
           <TextInput
-            className="text-text text-base tracking-widest"
+            style={{ color: theme.text, fontSize: 16, letterSpacing: 4 }}
             placeholder="6-digit code"
-            placeholderTextColor="#989c9a"
+            placeholderTextColor={theme.subtext}
             value={code}
             onChangeText={setCode}
             keyboardType="number-pad"
@@ -69,30 +71,30 @@ export default function VerifyScreen({ route, navigation }) {
         </View>
 
         {error ? (
-          <Text className="text-accent-2 mb-4 text-sm font-bold">
+          <Text style={{ color: '#A31E21', marginBottom: 16, fontSize: 13, fontWeight: 'bold' }}>
             {error}
           </Text>
         ) : null}
 
         <TouchableOpacity
-          className="bg-text py-4 items-center mb-6"
+          style={{ backgroundColor: theme.text, paddingVertical: 16, alignItems: 'center', marginBottom: 24 }}
           onPress={handleVerify}
           disabled={pending}
         >
-          <Text className="text-background font-bold uppercase tracking-widest">
+          <Text style={{ color: theme.bg, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>
             {pending ? 'CONFIRMING...' : 'CONFIRM'}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handleResend}>
-          <Text className="text-gray text-center text-sm">
+          <Text style={{ color: theme.subtext, textAlign: 'center', fontSize: 14 }}>
             Didn't get it?{' '}
-            <Text className="text-text font-bold uppercase">RESEND CODE</Text>
+            <Text style={{ color: theme.text, fontWeight: 'bold', textTransform: 'uppercase' }}>RESEND CODE</Text>
           </Text>
         </TouchableOpacity>
 
         {resendMsg ? (
-          <Text className="text-accent-3 text-center text-sm mt-2 font-bold">
+          <Text style={{ color: '#4F6815', textAlign: 'center', fontSize: 14, marginTop: 8, fontWeight: 'bold' }}>
             {resendMsg}
           </Text>
         ) : null}

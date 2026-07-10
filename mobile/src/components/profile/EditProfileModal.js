@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, Pressable, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function EditProfileModal({ nickname, avatar, onSave, onClose }) {
+export default function EditProfileModal({ nickname, avatar, onSave, onClose, theme }) {
   const [nick, setNick] = useState(nickname ?? '');
   const [av, setAv] = useState(avatar ?? null);
 
@@ -30,44 +30,44 @@ export default function EditProfileModal({ nickname, avatar, onSave, onClose }) 
         style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'center', padding: 24 }}
         onPress={onClose}
       >
-        <Pressable onPress={() => {}} className="bg-background border-2 border-borders p-8">
-          <Text className="text-gray text-xs uppercase tracking-widest mb-6">Edit Profile</Text>
+        <Pressable onPress={() => {}} style={{ backgroundColor: theme.surface, borderWidth: 2, borderColor: theme.border, padding: 32 }}>
+          <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 24 }}>Edit Profile</Text>
 
           {/* Avatar preview */}
-          <View className="items-center mb-4">
+          <View style={{ alignItems: 'center', marginBottom: 16 }}>
             {av ? (
-              <Image source={{ uri: av }} style={{ width: 96, height: 96, borderWidth: 2, borderColor: '#1c1e24' }} />
+              <Image source={{ uri: av }} style={{ width: 96, height: 96, borderWidth: 2, borderColor: theme.border }} />
             ) : (
-              <View style={{ width: 96, height: 96, borderWidth: 2, borderColor: '#1c1e24', backgroundColor: '#EFEFEF' }} />
+              <View style={{ width: 96, height: 96, borderWidth: 2, borderColor: theme.border, backgroundColor: theme.elevated }} />
             )}
             <TouchableOpacity
               onPress={pickPhoto}
-              className="border border-borders px-3 py-1 mt-3"
+              style={{ borderWidth: 1, borderColor: theme.border, paddingHorizontal: 12, paddingVertical: 4, marginTop: 12 }}
             >
-              <Text className="text-text text-xs uppercase">Change photo</Text>
+              <Text style={{ color: theme.text, fontSize: 10, textTransform: 'uppercase' }}>Change photo</Text>
             </TouchableOpacity>
           </View>
 
-          <Text className="text-gray text-xs uppercase tracking-widest mb-2">Nickname</Text>
+          <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 8 }}>Nickname</Text>
           <TextInput
             value={nick}
             onChangeText={setNick}
-            className="border border-borders px-3 py-2 text-text bg-background"
-            placeholderTextColor="#989c9a"
+            style={{ borderWidth: 1, borderColor: theme.border, paddingHorizontal: 12, paddingVertical: 8, color: theme.text, fontSize: 14, backgroundColor: theme.bg }}
+            placeholderTextColor={theme.subtext}
           />
 
-          <View className="flex-row gap-3 mt-6">
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 24 }}>
             <TouchableOpacity
-              className="flex-1 border-2 border-borders py-3 items-center"
+              style={{ flex: 1, borderWidth: 2, borderColor: theme.border, paddingVertical: 12, alignItems: 'center' }}
               onPress={() => onSave({ nickname: nick.trim() || 'Guest', avatar: av })}
             >
-              <Text className="text-text text-sm font-bold uppercase tracking-widest">Save</Text>
+              <Text style={{ color: theme.text, fontSize: 11, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="flex-1 border-2 border-borders py-3 items-center"
+              style={{ flex: 1, borderWidth: 2, borderColor: theme.border, paddingVertical: 12, alignItems: 'center' }}
               onPress={onClose}
             >
-              <Text className="text-gray text-sm font-bold uppercase tracking-widest">Cancel</Text>
+              <Text style={{ color: theme.subtext, fontSize: 11, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </Pressable>

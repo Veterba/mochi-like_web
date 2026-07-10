@@ -14,30 +14,19 @@ import * as Haptics from 'expo-haptics';
 const THRESHOLD = 120;
 const SCREEN_W = Dimensions.get('window').width;
 
-const BORDER_NEUTRAL = '#1c1e24';
 const BORDER_KNOW = '#4F6815';
 const BORDER_DONT = '#A31E21';
-
-const cardFace = {
-  backgroundColor: '#F9F7F5',
-  borderWidth: 2,
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: 24,
-};
 
 // Render with key={seq} from useSwipeDeck: each committed swipe then mounts a
 // fresh instance whose shared values start at 0, so the incoming card can never
 // inherit the previous card's off-screen transform — even when a reshuffle
 // serves the same card id again.
-export default function SwipeCard({ card, next, flipped, flip, commit, buffer, learned }) {
+export default function SwipeCard({ card, next, flipped, flip, commit, buffer, learned, theme }) {
+  const BORDER_NEUTRAL = theme.border;
+
   const translateX = useSharedValue(0);
-  // True while the fly-out animation runs; blocks pan/tap so a touch can't
-  // cancel the withTiming callback and silently drop the commit.
   const animating = useSharedValue(false);
 
-  // Fallback for consumers that don't remount via key: at least reset when
-  // the card id changes.
   useEffect(() => {
     translateX.value = 0;
     animating.value = false;
@@ -68,11 +57,11 @@ export default function SwipeCard({ card, next, flipped, flip, commit, buffer, l
   }));
 
   const dontLabelStyle = useAnimatedStyle(() => ({
-    color: translateX.value < -40 ? BORDER_DONT : '#989c9a',
+    color: translateX.value < -40 ? BORDER_DONT : theme.subtext,
   }));
 
   const knowLabelStyle = useAnimatedStyle(() => ({
-    color: translateX.value > 40 ? BORDER_KNOW : '#989c9a',
+    color: translateX.value > 40 ? BORDER_KNOW : theme.subtext,
   }));
 
   const pan = Gesture.Pan()
@@ -104,6 +93,14 @@ export default function SwipeCard({ card, next, flipped, flip, commit, buffer, l
 
   const gesture = Gesture.Exclusive(pan, tap);
 
+  const cardFace = {
+    backgroundColor: theme.surface,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  };
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16 }}>
       {/* Intent labels */}
@@ -120,16 +117,16 @@ export default function SwipeCard({ card, next, flipped, flip, commit, buffer, l
         </Animated.Text>
       </View>
 
-      {/* Card stack: next card sits beneath the swipeable one */}
+      {/* Card stack */}
       <View style={{ width: '100%', aspectRatio: 3 / 2 }}>
         <View
           style={[
             cardFace,
-            { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderColor: '#D8D5DB' },
+            { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderColor: theme.faint },
           ]}
         >
           {next ? (
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#989c9a', textAlign: 'center' }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: theme.subtext, textAlign: 'center' }}>
               {next.front || '—'}
             </Text>
           ) : null}
@@ -143,10 +140,10 @@ export default function SwipeCard({ card, next, flipped, flip, commit, buffer, l
               cardStyle,
             ]}
           >
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#1B1717', textAlign: 'center' }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: theme.text, textAlign: 'center' }}>
               {flipped ? (card?.back || '—') : (card?.front || '—')}
             </Text>
-            <Text style={{ fontSize: 10, color: '#989c9a', marginTop: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
+            <Text style={{ fontSize: 10, color: theme.subtext, marginTop: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
               {flipped ? 'back · tap to flip' : 'tap to flip'}
             </Text>
           </Animated.View>
@@ -157,7 +154,7 @@ export default function SwipeCard({ card, next, flipped, flip, commit, buffer, l
       <View style={{ flexDirection: 'row', marginTop: 24, width: '100%', gap: 12 }}>
         {/* REST / buffer */}
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#989c9a', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>
+          <Text style={{ fontSize: 10, fontWeight: 'bold', color: theme.subtext, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>
             REST · {buffer.length}
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -175,7 +172,7 @@ export default function SwipeCard({ card, next, flipped, flip, commit, buffer, l
 
         {/* LEARNED pile */}
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#989c9a', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>
+          <Text style={{ fontSize: 10, fontWeight: 'bold', color: theme.subtext, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>
             LEARNED · {learned.length}
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>

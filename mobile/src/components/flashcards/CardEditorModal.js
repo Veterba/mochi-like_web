@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, Modal, Pressable, TextInput, TouchableOpacity } from 'react-native';
 
-export default function CardEditorModal({ visible, onConfirm, onClose }) {
+export default function CardEditorModal({ visible, onConfirm, onClose, theme }) {
   const [front, setFront] = useState('');
   const [back, setBack] = useState('');
   const [busy, setBusy] = useState(false);
@@ -31,42 +31,42 @@ export default function CardEditorModal({ visible, onConfirm, onClose }) {
         style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'center', padding: 24 }}
         onPress={handleClose}
       >
-        <Pressable onPress={() => {}} className="bg-background border-2 border-borders p-6">
-          <Text className="text-text text-xs font-bold uppercase tracking-widest mb-4">
+        <Pressable onPress={() => {}} style={{ backgroundColor: theme.surface, borderWidth: 2, borderColor: theme.border, padding: 24 }}>
+          <Text style={{ color: theme.text, fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 16 }}>
             New Card
           </Text>
-          <Text className="text-gray text-xs uppercase tracking-widest mb-1">Front</Text>
+          <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 6 }}>Front</Text>
           <TextInput
-            className="border-2 border-borders px-4 py-3 text-text text-sm mb-4"
+            style={{ borderWidth: 2, borderColor: theme.border, paddingHorizontal: 16, paddingVertical: 12, color: theme.text, fontSize: 13, marginBottom: 16, backgroundColor: theme.bg }}
             placeholder="Front side"
-            placeholderTextColor="#989c9a"
+            placeholderTextColor={theme.subtext}
             value={front}
             onChangeText={setFront}
             autoFocus
           />
-          <Text className="text-gray text-xs uppercase tracking-widest mb-1">Back</Text>
+          <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 6 }}>Back</Text>
           <TextInput
-            className="border-2 border-borders px-4 py-3 text-text text-sm mb-4"
+            style={{ borderWidth: 2, borderColor: theme.border, paddingHorizontal: 16, paddingVertical: 12, color: theme.text, fontSize: 13, marginBottom: 16, backgroundColor: theme.bg }}
             placeholder="Back side"
-            placeholderTextColor="#989c9a"
+            placeholderTextColor={theme.subtext}
             value={back}
             onChangeText={setBack}
             returnKeyType="done"
             onSubmitEditing={handleConfirm}
           />
-          <View className="flex-row gap-3">
+          <View style={{ flexDirection: 'row', gap: 12 }}>
             <TouchableOpacity
-              className="flex-1 border-2 border-borders py-3 items-center"
+              style={{ flex: 1, borderWidth: 2, borderColor: theme.border, paddingVertical: 12, alignItems: 'center' }}
               onPress={handleClose}
             >
-              <Text className="text-gray text-xs font-bold uppercase tracking-widest">Cancel</Text>
+              <Text style={{ color: theme.subtext, fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="flex-1 border-2 border-borders py-3 items-center"
+              style={{ flex: 1, borderWidth: 2, borderColor: theme.border, paddingVertical: 12, alignItems: 'center' }}
               onPress={handleConfirm}
               disabled={busy}
             >
-              <Text className="text-text text-xs font-bold uppercase tracking-widest">
+              <Text style={{ color: theme.text, fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>
                 {busy ? 'Saving…' : 'Save'}
               </Text>
             </TouchableOpacity>

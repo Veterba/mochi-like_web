@@ -39,7 +39,7 @@ export async function getMessages(userId, chatId) {
   `
 }
 
-export async function sendMessage(userId, chatId, content) {
+export async function sendMessage(userId, chatId, content, override) {
   const chat = await ownChat(userId, chatId)
   if (!chat) return null
 
@@ -62,7 +62,7 @@ export async function sendMessage(userId, chatId, content) {
     ) t order by created_at asc
   `
 
-  const reply = await tutorReply(recent)
+  const reply = await tutorReply(recent, override)
 
   const [message] = await sql`
     insert into chat_messages (chat_id, role, content)

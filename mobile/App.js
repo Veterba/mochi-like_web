@@ -10,6 +10,8 @@ import { BlurView } from 'expo-blur';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AuthProvider, useAuth } from './src/hooks/useAuth';
+import { SettingsProvider } from './src/hooks/useSettings';
+import { ThemeProvider, useTheme } from './src/hooks/useTheme';
 import LoginScreen from './src/screens/auth/LoginScreen';
 import SignupScreen from './src/screens/auth/SignupScreen';
 import VerifyScreen from './src/screens/auth/VerifyScreen';
@@ -29,15 +31,15 @@ const Tab = createBottomTabNavigator();
 const LangStack = createNativeStackNavigator();
 const FlashStack = createNativeStackNavigator();
 
-const HEADER_OPTS = {
-  headerStyle: { backgroundColor: '#F9F7F5' },
-  headerTintColor: '#1B1717',
-  headerTitleStyle: { fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 },
-  headerShadowVisible: false,
-  headerBackTitle: '',
-};
-
 function LanguagesStack() {
+  const { theme } = useTheme();
+  const HEADER_OPTS = {
+    headerStyle: { backgroundColor: theme.bg },
+    headerTintColor: theme.text,
+    headerTitleStyle: { fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 },
+    headerShadowVisible: false,
+    headerBackTitle: '',
+  };
   return (
     <LangStack.Navigator screenOptions={{ ...HEADER_OPTS, headerShown: true }}>
       <LangStack.Screen name="LanguagesHome" component={LanguagesHomeScreen} options={{ headerShown: false }} />
@@ -53,8 +55,15 @@ function LanguagesStack() {
 
 function FlashcardsStack() {
   const { user } = useAuth();
+  const { theme } = useTheme();
+  const HEADER_OPTS = {
+    headerStyle: { backgroundColor: theme.bg },
+    headerTintColor: theme.text,
+    headerTitleStyle: { fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 },
+    headerShadowVisible: false,
+    headerBackTitle: '',
+  };
 
-  // Flashcards live on the user's account — guests get a sign-in prompt.
   if (!user) {
     return (
       <SignInPrompt
@@ -83,26 +92,28 @@ const TAB_ICONS = {
 };
 
 function AppTabs() {
+  const { theme, scheme } = useTheme();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        // Glassy translucent tab bar: it floats over content (position
-        // absolute) with a blur behind it, iOS-style. Screens add bottom
-        // padding so their last items aren't hidden underneath.
         tabBarStyle: {
           position: 'absolute',
-          borderTopColor: '#1c1e24',
-          borderTopWidth: 2,
-          backgroundColor: Platform.OS === 'ios' ? 'transparent' : '#F9F7F5',
+          borderTopColor: scheme === 'dark' ? 'rgba(58,58,58,0.8)' : 'rgba(28,30,36,0.12)',
+          borderTopWidth: StyleSheet.hairlineWidth,
+          backgroundColor: Platform.OS === 'ios' ? 'transparent' : theme.bg,
           elevation: 0,
         },
         tabBarBackground: () =>
           Platform.OS === 'ios' ? (
-            <BlurView tint="light" intensity={40} style={StyleSheet.absoluteFill} />
+            <BlurView
+              tint={scheme === 'dark' ? 'systemChromeMaterialDark' : 'systemChromeMaterialLight'}
+              intensity={90}
+              style={StyleSheet.absoluteFill}
+            />
           ) : null,
-        tabBarActiveTintColor: '#1B1717',
-        tabBarInactiveTintColor: '#989c9a',
+        tabBarActiveTintColor: theme.text,
+        tabBarInactiveTintColor: theme.subtext,
         tabBarLabelStyle: {
           fontWeight: 'bold',
           textTransform: 'uppercase',
@@ -125,18 +136,16 @@ function AppTabs() {
 
 function RootNavigator() {
   const { ready } = useAuth();
+  const { theme } = useTheme();
 
   if (!ready) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F5' }}>
-        <ActivityIndicator color="#1B1717" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bg }}>
+        <ActivityIndicator color={theme.text} />
       </View>
     );
   }
 
-  // Browse-first, like the web app: the tabs are always available and auth
-  // screens are pushed on demand. Account-backed tabs (Flashcards, Profile)
-  // show a SignInPrompt for guests.
   return (
     <NavigationContainer>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -149,13 +158,23 @@ function RootNavigator() {
   );
 }
 
+function AppInner() {
+  return (
+    <AuthProvider>
+      <RootNavigator />
+    </AuthProvider>
+  );
+}
+
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <AuthProvider>
-          <RootNavigator />
-        </AuthProvider>
+        <SettingsProvider>
+          <ThemeProvider>
+            <AppInner />
+          </ThemeProvider>
+        </SettingsProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

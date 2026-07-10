@@ -1,31 +1,32 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 
-export default function LearningList({ statuses, onGoToLanguages }) {
+export default function LearningList({ statuses, onGoToLanguages, theme }) {
   const entries = Object.entries(statuses);
   const learning = entries.filter(([, s]) => s === 'learning');
   const completed = entries.filter(([, s]) => s === 'completed');
 
   return (
-    <View className="border-2 border-borders p-4 mb-4">
-      <Text className="text-gray text-xs uppercase tracking-widest mb-3">Learning</Text>
+    <View style={{ borderWidth: 2, borderColor: theme.border, padding: 16, marginBottom: 16 }}>
+      <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 12 }}>Learning</Text>
 
       {entries.length === 0 ? (
         <TouchableOpacity onPress={onGoToLanguages}>
-          <Text className="text-gray text-sm">
-            Nothing yet. <Text className="text-text underline">Pick a language →</Text>
+          <Text style={{ color: theme.subtext, fontSize: 14 }}>
+            Nothing yet.{' '}
+            <Text style={{ color: theme.text, textDecorationLine: 'underline' }}>Pick a language →</Text>
           </Text>
         </TouchableOpacity>
       ) : (
-        <View className="gap-4">
+        <View style={{ gap: 16 }}>
           {learning.length > 0 && (
             <View>
-              <Text className="text-accent-1 text-xs uppercase tracking-widest mb-2">
+              <Text style={{ color: '#d29f22', fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 8 }}>
                 Currently learning · {learning.length}
               </Text>
-              <View className="flex-row flex-wrap gap-2">
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                 {learning.map(([name]) => (
-                  <View key={name} className="border border-accent-1 px-3 py-1">
-                    <Text className="text-accent-1 text-sm">{name}</Text>
+                  <View key={name} style={{ borderWidth: 1, borderColor: '#d29f22', paddingHorizontal: 12, paddingVertical: 4 }}>
+                    <Text style={{ color: '#d29f22', fontSize: 14 }}>{name}</Text>
                   </View>
                 ))}
               </View>
@@ -33,13 +34,13 @@ export default function LearningList({ statuses, onGoToLanguages }) {
           )}
           {completed.length > 0 && (
             <View>
-              <Text className="text-accent-3 text-xs uppercase tracking-widest mb-2">
+              <Text style={{ color: '#4F6815', fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 8 }}>
                 Completed · {completed.length}
               </Text>
-              <View className="flex-row flex-wrap gap-2">
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                 {completed.map(([name]) => (
-                  <View key={name} className="border border-accent-3 px-3 py-1">
-                    <Text className="text-accent-3 text-sm">{name}</Text>
+                  <View key={name} style={{ borderWidth: 1, borderColor: '#4F6815', paddingHorizontal: 12, paddingVertical: 4 }}>
+                    <Text style={{ color: '#4F6815', fontSize: 14 }}>{name}</Text>
                   </View>
                 ))}
               </View>

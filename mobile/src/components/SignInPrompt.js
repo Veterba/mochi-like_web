@@ -1,28 +1,29 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../hooks/useTheme';
 
-// Shown in place of account-backed screens when browsing as a guest.
-// 'Login'/'Signup' live in the root stack, so navigate() bubbles up from tabs.
 export default function SignInPrompt({ title = 'Sign in required', message }) {
   const navigation = useNavigation();
+  const { theme } = useTheme();
 
   return (
-    <View className="flex-1 bg-background items-center justify-center px-8">
-      <Text className="text-text font-bold uppercase tracking-widest text-xl mb-3 text-center">
+    <View style={{ flex: 1, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
+      <Text style={{ color: theme.text, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2, fontSize: 20, marginBottom: 12, textAlign: 'center' }}>
         {title}
       </Text>
       {message ? (
-        <Text className="text-gray text-sm text-center mb-8">{message}</Text>
+        <Text style={{ color: theme.subtext, fontSize: 14, textAlign: 'center', marginBottom: 32 }}>{message}</Text>
       ) : null}
       <TouchableOpacity
-        className="bg-text px-10 py-4 mb-4"
+        style={{ backgroundColor: theme.text, paddingHorizontal: 40, paddingVertical: 16, marginBottom: 16 }}
         onPress={() => navigation.navigate('Login')}
       >
-        <Text className="text-background font-bold uppercase tracking-widest">Sign in</Text>
+        <Text style={{ color: theme.bg, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>Sign in</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-        <Text className="text-gray text-sm">
-          No account? <Text className="text-text font-bold uppercase">Sign up</Text>
+        <Text style={{ color: theme.subtext, fontSize: 14 }}>
+          No account?{' '}
+          <Text style={{ color: theme.text, fontWeight: 'bold', textTransform: 'uppercase' }}>Sign up</Text>
         </Text>
       </TouchableOpacity>
     </View>

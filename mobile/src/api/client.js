@@ -8,6 +8,10 @@ import * as SecureStore from 'expo-secure-store';
 const BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:4200/api';
 const TOKEN_KEY = 'token';
 
+// Set by useSettings when the user configures a custom LLM provider.
+let llmOverride = null;
+export function setLlmConfig(o) { llmOverride = o; }
+
 export async function setToken(token) {
   await SecureStore.setItemAsync(TOKEN_KEY, token);
 }
@@ -22,6 +26,12 @@ export async function api(path, { method, body } = {}) {
   const headers = {};
   if (body) headers['Content-Type'] = 'application/json';
   if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  if (llmOverride) {
+    if (llmOverride.baseUrl) headers['x-llm-base-url'] = llmOverride.baseUrl;
+    if (llmOverride.apiKey) headers['x-llm-api-key'] = llmOverride.apiKey;
+    if (llmOverride.model) headers['x-llm-model'] = llmOverride.model;
+  }
 
   let res;
   try {

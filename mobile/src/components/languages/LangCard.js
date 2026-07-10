@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { accentHex } from '../../assets/data';
 
-export default function LangCard({ name, accentKey, status, onPress, onDotPress, available }) {
+export default function LangCard({ name, accentKey, status, onPress, onDotPress, available, theme }) {
   const color = accentHex[accentKey] ?? '#1c1e24';
 
   const dotColor =
@@ -9,16 +9,13 @@ export default function LangCard({ name, accentKey, status, onPress, onDotPress,
     : status === 'completed' ? '#4F6815'
     : 'transparent';
 
-  // Same outer structure for every cell (available or not) so the two-column
-  // grid stays aligned. Unavailable cards simply don't respond to taps.
   return (
     <Pressable
       onPress={available ? onPress : undefined}
       style={{ flex: 1, margin: 4 }}
     >
       <View
-        style={{ borderColor: color, borderWidth: 2, opacity: available ? 1 : 0.4 }}
-        className="aspect-[4/3] items-center justify-center relative"
+        style={{ borderColor: color, borderWidth: 2, opacity: available ? 1 : 0.4, aspectRatio: 4 / 3, alignItems: 'center', justifyContent: 'center', position: 'relative' }}
       >
         {/* status dot */}
         <TouchableOpacity
@@ -33,21 +30,21 @@ export default function LangCard({ name, accentKey, status, onPress, onDotPress,
           }}
         />
 
-        <Text className="text-text font-bold uppercase tracking-tight text-base text-center px-2">
+        <Text style={{ color: theme.text, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: -0.5, fontSize: 14, textAlign: 'center', paddingHorizontal: 8 }}>
           {name}
         </Text>
 
         {!available && (
-          <View className="absolute bottom-1 right-2">
-            <Text style={{ color, fontSize: 9 }} className="uppercase tracking-widest font-bold">
+          <View style={{ position: 'absolute', bottom: 4, right: 8 }}>
+            <Text style={{ color, fontSize: 9, textTransform: 'uppercase', letterSpacing: 2, fontWeight: 'bold' }}>
               soon
             </Text>
           </View>
         )}
 
         {status && available && (
-          <View className="absolute bottom-1 left-2">
-            <Text style={{ color, fontSize: 9 }} className="uppercase tracking-widest font-bold">
+          <View style={{ position: 'absolute', bottom: 4, left: 8 }}>
+            <Text style={{ color, fontSize: 9, textTransform: 'uppercase', letterSpacing: 2, fontWeight: 'bold' }}>
               {status}
             </Text>
           </View>

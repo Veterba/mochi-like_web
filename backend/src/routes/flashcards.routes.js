@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import Joi from 'joi'
 import { requireAuth } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
 import { nameSchema, cardSchema } from '../validators/flashcards.js'
@@ -6,6 +7,23 @@ import * as fc from '../services/flashcards.service.js'
 
 const router = Router()
 router.use(requireAuth)
+
+const learnedSchema = Joi.object({
+  count: Joi.number().integer().min(1).max(1000).required()
+})
+
+router.get('/stats', async (req, res, next) => {
+  try {
+    res.json(await fc.stats(req.userId))
+  } catch (err) { next(err) }
+})
+
+router.post('/learned', validate(learnedSchema), async (req, res, next) => {
+  try {
+    await fc.incrementLearned(req.userId, req.body.count)
+    res.json({ ok: true })
+  } catch (err) { next(err) }
+})
 
 router.get('/', async (req, res, next) => {
   try {

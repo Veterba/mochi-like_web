@@ -4,15 +4,20 @@ const SYSTEM_PROMPT = readFileSync(new URL('../tutor-system-prompt.md', import.m
 
 // Works with any OpenAI-compatible provider (OpenRouter, Google AI Studio,
 // Groq, Alibaba Model Studio, ...) — set LLM_BASE_URL / LLM_API_KEY / LLM_MODEL in .env
-export async function tutorReply(history) {
-  const res = await fetch(`${process.env.LLM_BASE_URL}/chat/completions`, {
+// or pass override = { baseUrl, apiKey, model } to use the caller's own key.
+export async function tutorReply(history, override) {
+  const baseUrl = (override && override.baseUrl) ? override.baseUrl : process.env.LLM_BASE_URL
+  const apiKey  = (override && override.apiKey)  ? override.apiKey  : process.env.LLM_API_KEY
+  const model   = (override && override.model)   ? override.model   : process.env.LLM_MODEL
+
+  const res = await fetch(`${baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.LLM_API_KEY}`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: process.env.LLM_MODEL,
+      model,
       max_tokens: 1000,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },

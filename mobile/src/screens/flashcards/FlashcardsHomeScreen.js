@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useDecks } from '../../hooks/useDecks';
 import NamePromptModal from '../../components/flashcards/NamePromptModal';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function FlashcardsHomeScreen({ navigation }) {
   const { folders, loading, addFolder, deleteFolder, addTopic, deleteTopic } = useDecks();
   const [expanded, setExpanded] = useState({});
-  const [modal, setModal] = useState(null); // { kind: 'folder' } | { kind: 'topic', folderId }
+  const [modal, setModal] = useState(null);
+  const { theme } = useTheme();
 
   const toggleExpand = (id) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
 
@@ -34,52 +36,56 @@ export default function FlashcardsHomeScreen({ navigation }) {
   };
 
   return (
-    <View className="flex-1 bg-background">
+    <View style={{ flex: 1, backgroundColor: theme.bg }}>
       <ScrollView contentContainerStyle={{ padding: 24, paddingTop: 16, paddingBottom: 100 }}>
         {loading ? (
-          <ActivityIndicator color="#1B1717" style={{ marginTop: 40 }} />
+          <ActivityIndicator color={theme.text} style={{ marginTop: 40 }} />
         ) : folders.length === 0 ? (
-          <Text className="text-gray text-xs uppercase tracking-widest mt-8 text-center">
+          <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginTop: 32, textAlign: 'center' }}>
             No folders yet. Add one below.
           </Text>
         ) : (
           folders.map((folder) => (
-            <View key={folder.id} className="mb-2">
+            <View key={folder.id} style={{ marginBottom: 8 }}>
               {/* Folder row */}
               <TouchableOpacity
                 onPress={() => toggleExpand(folder.id)}
                 onLongPress={() => confirmDeleteFolder(folder)}
-                className="border-2 border-borders px-4 py-3 flex-row items-center justify-between"
+                style={{ borderWidth: 2, borderColor: theme.border, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
               >
-                <Text className="text-text font-bold uppercase tracking-widest text-sm flex-1" numberOfLines={1}>
+                <Text style={{ color: theme.text, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2, fontSize: 13, flex: 1 }} numberOfLines={1}>
                   {folder.name}
                 </Text>
-                <Text className="text-gray text-xs ml-2">{expanded[folder.id] ? '▲' : '▼'}</Text>
+                <Text style={{ color: theme.subtext, fontSize: 12, marginLeft: 8 }}>
+                  {expanded[folder.id] ? '▲' : '▼'}
+                </Text>
               </TouchableOpacity>
 
               {/* Topics */}
               {expanded[folder.id] && (
-                <View className="ml-4 mt-1">
+                <View style={{ marginLeft: 16, marginTop: 4 }}>
                   {folder.topics.map((topic) => (
                     <TouchableOpacity
                       key={topic.id}
                       onPress={() => navigation.navigate('Topic', { topicId: topic.id, name: topic.name })}
                       onLongPress={() => confirmDeleteTopic(topic)}
-                      className="border-l-2 border-borders pl-3 py-2 mb-1 flex-row items-center justify-between"
+                      style={{ borderLeftWidth: 2, borderLeftColor: theme.border, paddingLeft: 12, paddingVertical: 8, marginBottom: 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
                     >
-                      <Text className="text-text text-sm uppercase tracking-wide flex-1" numberOfLines={1}>
+                      <Text style={{ color: theme.text, fontSize: 13, textTransform: 'uppercase', letterSpacing: 1, flex: 1 }} numberOfLines={1}>
                         {topic.name}
                       </Text>
-                      <Text className="text-gray text-xs ml-2">{topic.cards?.length ?? 0} cards</Text>
+                      <Text style={{ color: theme.subtext, fontSize: 11, marginLeft: 8 }}>
+                        {topic.cards?.length ?? 0} cards
+                      </Text>
                     </TouchableOpacity>
                   ))}
 
                   {/* Add topic button */}
                   <TouchableOpacity
                     onPress={() => setModal({ kind: 'topic', folderId: folder.id })}
-                    className="border-l-2 border-second-gray pl-3 py-2 mb-1"
+                    style={{ borderLeftWidth: 2, borderLeftColor: theme.faint, paddingLeft: 12, paddingVertical: 8, marginBottom: 4 }}
                   >
-                    <Text className="text-gray text-xs uppercase tracking-widest">+ topic</Text>
+                    <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2 }}>+ topic</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -90,9 +96,9 @@ export default function FlashcardsHomeScreen({ navigation }) {
         {/* Add folder */}
         <TouchableOpacity
           onPress={() => setModal({ kind: 'folder' })}
-          className="border-2 border-borders border-dashed px-4 py-3 items-center mt-2"
+          style={{ borderWidth: 2, borderColor: theme.border, borderStyle: 'dashed', paddingHorizontal: 16, paddingVertical: 12, alignItems: 'center', marginTop: 8 }}
         >
-          <Text className="text-gray text-xs font-bold uppercase tracking-widest">+ folder</Text>
+          <Text style={{ color: theme.subtext, fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>+ folder</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -102,6 +108,7 @@ export default function FlashcardsHomeScreen({ navigation }) {
         placeholder={modal?.kind === 'folder' ? 'Folder name' : 'Topic name'}
         onConfirm={handleConfirm}
         onClose={() => setModal(null)}
+        theme={theme}
       />
     </View>
   );

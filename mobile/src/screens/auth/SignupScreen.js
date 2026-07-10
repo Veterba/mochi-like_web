@@ -9,9 +9,11 @@ import {
   ScrollView,
 } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function SignupScreen({ navigation }) {
   const { signup } = useAuth();
+  const { theme } = useTheme();
   const [email, setEmail] = useState('');
   const [loginVal, setLoginVal] = useState('');
   const [password, setPassword] = useState('');
@@ -36,84 +38,63 @@ export default function SignupScreen({ navigation }) {
     }
   };
 
+  const field = (children, extraStyle) => (
+    <View style={{ borderWidth: 2, borderColor: theme.border, backgroundColor: theme.bg, padding: 12, ...extraStyle }}>
+      {children}
+    </View>
+  );
+
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-background"
+      style={{ flex: 1, backgroundColor: theme.bg }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-center px-6">
-          <Text className="text-3xl font-bold uppercase text-text mb-8 tracking-widest">
+        <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24 }}>
+          <Text style={{ color: theme.text, fontSize: 28, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 4, marginBottom: 32 }}>
             SIGN UP
           </Text>
 
-          <View className="border-2 border-borders bg-background mb-4 p-3">
-            <TextInput
-              className="text-text text-base"
-              placeholder="Email"
-              placeholderTextColor="#989c9a"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
-          </View>
+          {field(
+            <TextInput style={{ color: theme.text, fontSize: 16 }} placeholder="Email" placeholderTextColor={theme.subtext} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />,
+            { marginBottom: 16 }
+          )}
+          {field(
+            <TextInput style={{ color: theme.text, fontSize: 16 }} placeholder="Login" placeholderTextColor={theme.subtext} value={loginVal} onChangeText={setLoginVal} autoCapitalize="none" />,
+            { marginBottom: 16 }
+          )}
+          {field(
+            <TextInput style={{ color: theme.text, fontSize: 16 }} placeholder="Password" placeholderTextColor={theme.subtext} value={password} onChangeText={setPassword} secureTextEntry />,
+            { marginBottom: 8 }
+          )}
 
-          <View className="border-2 border-borders bg-background mb-4 p-3">
-            <TextInput
-              className="text-text text-base"
-              placeholder="Login"
-              placeholderTextColor="#989c9a"
-              value={loginVal}
-              onChangeText={setLoginVal}
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View className="border-2 border-borders bg-background mb-2 p-3">
-            <TextInput
-              className="text-text text-base"
-              placeholder="Password"
-              placeholderTextColor="#989c9a"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-          </View>
-
-          <Text className="text-gray text-xs mb-4">
+          <Text style={{ color: theme.subtext, fontSize: 12, marginBottom: 16 }}>
             At least 8 characters, one uppercase letter, one lowercase letter and one digit
           </Text>
 
-          <View className="border-2 border-borders bg-background mb-6 p-3">
-            <TextInput
-              className="text-text text-base"
-              placeholder="Confirm password"
-              placeholderTextColor="#989c9a"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-            />
-          </View>
+          {field(
+            <TextInput style={{ color: theme.text, fontSize: 16 }} placeholder="Confirm password" placeholderTextColor={theme.subtext} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />,
+            { marginBottom: 24 }
+          )}
 
           {error ? (
-            <Text className="text-accent-2 mb-4 text-sm font-bold">{error}</Text>
+            <Text style={{ color: '#A31E21', marginBottom: 16, fontSize: 13, fontWeight: 'bold' }}>{error}</Text>
           ) : null}
 
           <TouchableOpacity
-            className="bg-text py-4 items-center mb-6"
+            style={{ backgroundColor: theme.text, paddingVertical: 16, alignItems: 'center', marginBottom: 24 }}
             onPress={handleSignup}
             disabled={pending}
           >
-            <Text className="text-background font-bold uppercase tracking-widest">
+            <Text style={{ color: theme.bg, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>
               {pending ? 'CREATING...' : 'CREATE ACCOUNT'}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text className="text-gray text-center text-sm">
+            <Text style={{ color: theme.subtext, textAlign: 'center', fontSize: 14 }}>
               Already have an account?{' '}
-              <Text className="text-text font-bold uppercase">SIGN IN</Text>
+              <Text style={{ color: theme.text, fontWeight: 'bold', textTransform: 'uppercase' }}>SIGN IN</Text>
             </Text>
           </TouchableOpacity>
         </View>

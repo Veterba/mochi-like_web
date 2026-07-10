@@ -8,6 +8,14 @@ import * as pronunciation from '../services/pronunciation.service.js'
 const router = Router()
 router.use(requireAuth)
 
+function llmOverride(req) {
+  const baseUrl = req.headers['x-llm-base-url']
+  const apiKey  = req.headers['x-llm-api-key']
+  const model   = req.headers['x-llm-model']
+  if (baseUrl && apiKey) return { baseUrl, apiKey, model: model || '' }
+  return undefined
+}
+
 router.get('/chats', async (req, res, next) => {
   try {
     res.json(await tutor.listChats(req.userId))
@@ -37,7 +45,7 @@ router.get('/chats/:id/messages', async (req, res, next) => {
 
 router.post('/chats/:id/messages', validate(messageSchema), async (req, res, next) => {
   try {
-    const reply = await tutor.sendMessage(req.userId, req.params.id, req.body.content)
+    const reply = await tutor.sendMessage(req.userId, req.params.id, req.body.content, llmOverride(req))
     if (!reply) return res.status(404).json({ error: 'Chat not found' })
     res.status(201).json(reply)
   } catch (err) {
@@ -54,8 +62,8 @@ router.post('/assess', validate(assessSchema), async (req, res, next) => {
     const result = await pronunciation.assess(req.userId, { text, audio, mimeType, lang })
     let reply = null
     if (chatId) {
-      reply = await tutor.sendMessage(req.userId, chatId, pronunciation.formatEvidence(text, result))
-      if (!reply) reply = null // chat not found — still return evidence
+      reply = await tutor.sendMessage(req.userId, chatId, pronunciation.formatEvidence(text, result), llmOverride(req))
+      if (!reply) reply = null
     }
     res.json({ ...result, reply })
   } catch (err) { next(err) }

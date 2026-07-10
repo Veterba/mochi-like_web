@@ -9,9 +9,11 @@ import {
   ScrollView,
 } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function LoginScreen({ navigation }) {
   const { login, resend } = useAuth();
+  const { theme } = useTheme();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -22,11 +24,10 @@ export default function LoginScreen({ navigation }) {
     setPending(true);
     try {
       await login({ identifier, password });
-      navigation.popToTop(); // back to the tabs, now signed in
+      navigation.popToTop();
     } catch (err) {
       const msg = err.message || 'Login failed';
       if (msg === 'Email not verified' || err.status === 403) {
-        // if identifier looks like an email, resend and go to verify
         if (identifier.includes('@')) {
           try { await resend(identifier); } catch (_) {}
           navigation.navigate('Verify', { email: identifier });
@@ -43,20 +44,20 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-background"
+      style={{ flex: 1, backgroundColor: theme.bg }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-center px-6">
-          <Text className="text-3xl font-bold uppercase text-text mb-8 tracking-widest">
+        <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24 }}>
+          <Text style={{ color: theme.text, fontSize: 28, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 4, marginBottom: 32 }}>
             SIGN IN
           </Text>
 
-          <View className="border-2 border-borders bg-background mb-4 p-3">
+          <View style={{ borderWidth: 2, borderColor: theme.border, backgroundColor: theme.bg, marginBottom: 16, padding: 12 }}>
             <TextInput
-              className="text-text text-base"
+              style={{ color: theme.text, fontSize: 16 }}
               placeholder="Email or login"
-              placeholderTextColor="#989c9a"
+              placeholderTextColor={theme.subtext}
               value={identifier}
               onChangeText={setIdentifier}
               autoCapitalize="none"
@@ -64,11 +65,11 @@ export default function LoginScreen({ navigation }) {
             />
           </View>
 
-          <View className="border-2 border-borders bg-background mb-6 p-3">
+          <View style={{ borderWidth: 2, borderColor: theme.border, backgroundColor: theme.bg, marginBottom: 24, padding: 12 }}>
             <TextInput
-              className="text-text text-base"
+              style={{ color: theme.text, fontSize: 16 }}
               placeholder="Password"
-              placeholderTextColor="#989c9a"
+              placeholderTextColor={theme.subtext}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -76,28 +77,28 @@ export default function LoginScreen({ navigation }) {
           </View>
 
           {error ? (
-            <Text className="text-accent-2 mb-4 text-sm font-bold">{error}</Text>
+            <Text style={{ color: '#A31E21', marginBottom: 16, fontSize: 13, fontWeight: 'bold' }}>{error}</Text>
           ) : null}
 
           <TouchableOpacity
-            className="bg-text py-4 items-center mb-6"
+            style={{ backgroundColor: theme.text, paddingVertical: 16, alignItems: 'center', marginBottom: 24 }}
             onPress={handleLogin}
             disabled={pending}
           >
-            <Text className="text-background font-bold uppercase tracking-widest">
+            <Text style={{ color: theme.bg, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 }}>
               {pending ? 'SIGNING IN...' : 'SIGN IN'}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-            <Text className="text-gray text-center text-sm">
+            <Text style={{ color: theme.subtext, textAlign: 'center', fontSize: 14 }}>
               No account?{' '}
-              <Text className="text-text font-bold uppercase">SIGN UP</Text>
+              <Text style={{ color: theme.text, fontWeight: 'bold', textTransform: 'uppercase' }}>SIGN UP</Text>
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="mt-6" onPress={() => navigation.popToTop()}>
-            <Text className="text-gray text-center text-xs uppercase tracking-widest">
+          <TouchableOpacity style={{ marginTop: 24 }} onPress={() => navigation.popToTop()}>
+            <Text style={{ color: theme.subtext, textAlign: 'center', fontSize: 10, textTransform: 'uppercase', letterSpacing: 2 }}>
               ← Continue without an account
             </Text>
           </TouchableOpacity>
