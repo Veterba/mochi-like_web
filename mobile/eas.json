@@ -10,13 +10,13 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "http://192.168.10.244:4200/api"
+        "EXPO_PUBLIC_API_URL": "https://popup-0anh.onrender.com/api"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://YOUR-DEPLOYED-BACKEND/api"
+        "EXPO_PUBLIC_API_URL": "https://popup-0anh.onrender.com/api"
       }
     }
   },
