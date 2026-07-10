@@ -90,7 +90,7 @@ function ProfileInner({ navigation }) {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: theme.bg }}
-      contentContainerStyle={{ padding: 24, paddingTop: insets.top + 24, paddingBottom: 100 }}
+      contentContainerStyle={{ padding: 24, paddingTop: insets.top + 24, paddingBottom: 24 }}
     >
       {/* Header card */}
       <View style={{ borderWidth: 2, borderColor: theme.border, padding: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center', gap: 16 }}>

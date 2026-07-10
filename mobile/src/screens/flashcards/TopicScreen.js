@@ -5,9 +5,10 @@ import CardEditorModal from '../../components/flashcards/CardEditorModal';
 import { useTheme } from '../../hooks/useTheme';
 
 export default function TopicScreen({ route, navigation }) {
-  const { topicId, name } = route.params;
+  const { topicId, name, folderName, folderId } = route.params;
   const { folders, addCard, deleteCard } = useDecks();
   const [showEditor, setShowEditor] = useState(false);
+  const [flipped, setFlipped] = useState({});
   const { theme } = useTheme();
 
   const topic = folders.flatMap((f) => f.topics).find((t) => t.id === topicId);
@@ -24,6 +25,8 @@ export default function TopicScreen({ route, navigation }) {
       { text: 'Delete', style: 'destructive', onPress: () => deleteCard(card.id) },
     ]);
   };
+
+  const toggleFlip = (id) => setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const data = [{ _add: true }, ...cards];
 
@@ -44,14 +47,17 @@ export default function TopicScreen({ route, navigation }) {
           }}
         >
           <Text style={{ color: theme.subtext, fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1, textAlign: 'center' }}>
-            Add card +
+            + New Card
           </Text>
         </TouchableOpacity>
       );
     }
 
+    const isFlipped = !!flipped[item.id];
+
     return (
       <TouchableOpacity
+        onPress={() => toggleFlip(item.id)}
         onLongPress={() => confirmDeleteCard(item)}
         style={{
           flex: 1,
@@ -62,32 +68,70 @@ export default function TopicScreen({ route, navigation }) {
           backgroundColor: theme.surface,
         }}
       >
-        {/* front */}
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10 }}>
-          <Text style={{ color: theme.text, fontSize: 14, fontWeight: 'bold', textAlign: 'center' }} numberOfLines={3}>
-            {item.front}
-          </Text>
+          {!isFlipped ? (
+            <>
+              <Text style={{ color: theme.text, fontSize: 14, fontWeight: 'bold', textAlign: 'center' }} numberOfLines={3}>
+                {item.front}
+              </Text>
+              <Text style={{ color: theme.subtext, fontSize: 9, textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>
+                tap to flip
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={{ color: theme.subtext, fontSize: 9, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
+                back
+              </Text>
+              <Text style={{ color: theme.text, fontSize: 13, textAlign: 'center' }} numberOfLines={4}>
+                {item.back || '—'}
+              </Text>
+            </>
+          )}
         </View>
-        {/* back */}
-        {item.back ? (
-          <View style={{ borderTopWidth: 1, borderTopColor: theme.faint, paddingHorizontal: 10, paddingVertical: 6 }}>
-            <Text style={{ color: theme.subtext, fontSize: 12, textAlign: 'center' }} numberOfLines={2}>
-              {item.back}
-            </Text>
-          </View>
-        ) : null}
       </TouchableOpacity>
     );
   };
 
+  const breadcrumbStyle = {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: theme.border,
+    backgroundColor: theme.bg,
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg }}>
+      {/* Breadcrumb: Flashcards › FolderName › TopicName */}
+      <View style={breadcrumbStyle}>
+        <TouchableOpacity onPress={() => navigation.navigate('FlashcardsHome')}>
+          <Text style={{ color: theme.accent3, fontSize: 11, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 }}>Flashcards</Text>
+        </TouchableOpacity>
+        <Text style={{ color: theme.subtext, fontSize: 11, marginHorizontal: 4 }}>›</Text>
+        {folderName && folderId ? (
+          <>
+            <TouchableOpacity onPress={() => navigation.navigate('Folder', { folderId, name: folderName })}>
+              <Text style={{ color: theme.accent3, fontSize: 11, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 }}>
+                {folderName}
+              </Text>
+            </TouchableOpacity>
+            <Text style={{ color: theme.subtext, fontSize: 11, marginHorizontal: 4 }}>›</Text>
+          </>
+        ) : null}
+        <Text style={{ color: theme.text, fontSize: 11, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1, flex: 1 }} numberOfLines={1}>
+          {name}
+        </Text>
+      </View>
+
       <FlatList
         data={data}
         keyExtractor={(item) => (item._add ? '_add' : item.id)}
         numColumns={2}
         renderItem={renderItem}
-        contentContainerStyle={{ padding: 12, paddingBottom: 100 }}
+        contentContainerStyle={{ padding: 12, paddingBottom: 24 }}
         ListHeaderComponent={
           <View style={{ marginBottom: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2 }}>
@@ -113,7 +157,7 @@ export default function TopicScreen({ route, navigation }) {
                 textTransform: 'uppercase',
                 letterSpacing: 2,
               }}>
-                Shuffle
+                Review ›
               </Text>
             </TouchableOpacity>
           </View>

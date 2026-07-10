@@ -5,8 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { View, ActivityIndicator } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AuthProvider, useAuth } from './src/hooks/useAuth';
@@ -21,6 +20,7 @@ import LanguagesHomeScreen from './src/screens/languages/LanguagesHomeScreen';
 import LanguageTopicsScreen from './src/screens/languages/LanguageTopicsScreen';
 import TopicDetailScreen from './src/screens/languages/TopicDetailScreen';
 import FlashcardsHomeScreen from './src/screens/flashcards/FlashcardsHomeScreen';
+import FolderScreen from './src/screens/flashcards/FolderScreen';
 import TopicScreen from './src/screens/flashcards/TopicScreen';
 import ShuffleScreen from './src/screens/flashcards/ShuffleScreen';
 import { DecksProvider } from './src/hooks/useDecks';
@@ -77,6 +77,7 @@ function FlashcardsStack() {
     <DecksProvider>
       <FlashStack.Navigator screenOptions={{ ...HEADER_OPTS, headerShown: true }}>
         <FlashStack.Screen name="FlashcardsHome" component={FlashcardsHomeScreen} options={{ title: 'Flashcards' }} />
+        <FlashStack.Screen name="Folder" component={FolderScreen} options={({ route }) => ({ title: route.params?.name ?? 'Folder' })} />
         <FlashStack.Screen name="Topic" component={TopicScreen} options={({ route }) => ({ title: route.params?.name ?? 'Topic' })} />
         <FlashStack.Screen name="Shuffle" component={ShuffleScreen} options={({ route }) => ({ title: route.params?.name ?? 'Shuffle' })} />
       </FlashStack.Navigator>
@@ -92,26 +93,16 @@ const TAB_ICONS = {
 };
 
 function AppTabs() {
-  const { theme, scheme } = useTheme();
+  const { theme } = useTheme();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          position: 'absolute',
-          borderTopColor: scheme === 'dark' ? 'rgba(58,58,58,0.8)' : 'rgba(28,30,36,0.12)',
-          borderTopWidth: StyleSheet.hairlineWidth,
-          backgroundColor: Platform.OS === 'ios' ? 'transparent' : theme.bg,
-          elevation: 0,
+          backgroundColor: theme.bg,
+          borderTopColor: theme.border,
+          borderTopWidth: 2,
         },
-        tabBarBackground: () =>
-          Platform.OS === 'ios' ? (
-            <BlurView
-              tint={scheme === 'dark' ? 'systemChromeMaterialDark' : 'systemChromeMaterialLight'}
-              intensity={90}
-              style={StyleSheet.absoluteFill}
-            />
-          ) : null,
         tabBarActiveTintColor: theme.text,
         tabBarInactiveTintColor: theme.subtext,
         tabBarLabelStyle: {

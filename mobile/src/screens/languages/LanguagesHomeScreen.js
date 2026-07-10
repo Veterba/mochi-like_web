@@ -40,7 +40,7 @@ export default function LanguagesHomeScreen({ navigation }) {
         data={languages}
         keyExtractor={(item) => item}
         numColumns={2}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 24 }}
         renderItem={({ item, index }) => {
           const accentKey = accentColors[index % accentColors.length];
           const slug = item.toLowerCase();

@@ -9,7 +9,7 @@ export default function TopicDetailScreen({ route }) {
   const { theme } = useTheme();
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: theme.bg }} contentContainerStyle={{ padding: 24, paddingBottom: 100 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: theme.bg }} contentContainerStyle={{ padding: 24, paddingBottom: 24 }}>
       <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 8 }}>
         grammar · {language}
       </Text>

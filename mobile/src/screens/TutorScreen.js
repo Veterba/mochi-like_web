@@ -161,7 +161,7 @@ function TutorInner() {
         </ScrollView>
       </View>
 
-      <View style={{ flex: 1, marginBottom: kbHeight }}>
+      <View style={{ flex: 1, marginBottom: Math.max(kbHeight - tabBarHeight, 0) }}>
         {activeChatId ? (
           <FlatList
             ref={listRef}
@@ -201,7 +201,7 @@ function TutorInner() {
 
         {/* Input bar */}
         {activeChatId ? (
-          <View style={{ paddingHorizontal: 24, paddingBottom: kbHeight > 0 ? 10 : tabBarHeight }}>
+          <View style={{ paddingHorizontal: 24, paddingBottom: 10 }}>
             {error ? (
               <Text style={{ color: '#A31E21', fontSize: 10, fontWeight: 'bold', marginBottom: 8 }}>{error}</Text>
             ) : null}

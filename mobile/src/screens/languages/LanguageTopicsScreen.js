@@ -13,7 +13,7 @@ export default function LanguageTopicsScreen({ route, navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg }}>
-      <ScrollView contentContainerStyle={{ paddingTop: 16, paddingBottom: 100 }}>
+      <ScrollView contentContainerStyle={{ paddingTop: 16, paddingBottom: 24 }}>
         <Text style={{ color: theme.subtext, fontSize: 10, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 16, paddingHorizontal: 24 }}>
           {topics.length} topics · grammar guide
         </Text>
