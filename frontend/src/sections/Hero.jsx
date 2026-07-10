@@ -2,8 +2,8 @@ import { heroCards } from "../assets/data.js"
 
 function Hero() {
   return (
-    <section className="flex flex-col justify-around h-screen  items-center bg-background px-6 py-20 text-center text-text">
-      <div className="flex flex-col items-center px-6 py-20 text-center text-text">
+    <section className="flex flex-col justify-around min-h-screen items-center bg-background px-4 py-10 md:px-6 md:py-20 text-center text-text">
+      <div className="flex flex-col items-center px-4 py-10 md:px-6 md:py-20 text-center text-text">
         <h1 className="text-5xl font-black uppercase leading-none tracking-tight sm:text-6xl">
           Fast way to learn new language
         </h1>

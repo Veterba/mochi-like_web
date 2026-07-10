@@ -11,7 +11,7 @@ function Homepage() {
       <LangCards />
 
       {sections.map((s) => (
-        <section key={s.id} className="border-t border-borders bg-background px-6 py-20 text-text">
+        <section key={s.id} className="border-t border-borders bg-background px-4 py-12 md:px-6 md:py-20 text-text">
           <div className="mx-auto max-w-5xl">
             <h2 className="text-4xl font-black uppercase tracking-tight sm:text-5xl">
               {s.heading}

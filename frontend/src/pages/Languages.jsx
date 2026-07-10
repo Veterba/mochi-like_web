@@ -13,7 +13,7 @@ function Languages() {
   return (
     <div>
       <Navbar sticky />
-      <section className="mx-auto max-w-6xl px-6 py-12">
+      <section className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
         <h1 className="mb-2 text-4xl font-black uppercase tracking-tight">Languages</h1>
         <p className="mb-8 text-sm uppercase tracking-widest text-gray">
           English, Norwegian, German and Spanish currently available

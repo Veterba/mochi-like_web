@@ -73,7 +73,7 @@ function Tutor() {
   return (
     <div className="flex min-h-screen flex-col bg-third-background">
       <Navbar sticky />
-      <div className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-6 py-8 md:grid-cols-[240px_1fr]">
+      <div className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-4 py-6 md:px-6 md:py-8 md:grid-cols-[240px_1fr]">
 
         {/* chat list */}
         <aside className="flex flex-col gap-3">
@@ -127,7 +127,7 @@ function Tutor() {
               {messages.map((m) => (
                 <li
                   key={m.id}
-                  className={`max-w-[80%] whitespace-pre-wrap border border-borders px-4 py-3 text-sm ${
+                  className={`max-w-[85%] whitespace-pre-wrap border border-borders px-4 py-3 text-sm ${
                     m.role === 'user'
                       ? 'self-end bg-accent-background'
                       : 'self-start bg-third-background'

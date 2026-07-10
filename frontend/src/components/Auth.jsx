@@ -103,7 +103,7 @@ function Auth({ isOpen, onClose }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md border border-borders bg-background p-12"
+        className="relative mx-4 w-full max-w-md border border-borders bg-background p-8 md:p-12"
       >
         <button
           type="button"

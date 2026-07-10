@@ -10,17 +10,19 @@ function Navbar({ sticky = false }) {
 
   return (
     <nav
-      className={`flex justify-between border-b border-borders bg-background py-4 px-12 text-text${
+      className={`flex justify-between border-b border-borders bg-background py-4 px-4 md:px-12 text-text${
         sticky ? " sticky top-0 z-40" : ""
       }`}
     >
-      <Burger />
+      <Burger onAuthClick={() => setIsAuthOpen(true)} />
       <div className="mx-auto w-30">
         <Link to="/" className="text-center">
           <h1>pop up</h1>
         </Link>
       </div>
-      <NavLinkRight onAuthClick={() => setIsAuthOpen(true)} />
+      <div className="hidden md:block">
+        <NavLinkRight onAuthClick={() => setIsAuthOpen(true)} />
+      </div>
       <Auth isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </nav>
   )

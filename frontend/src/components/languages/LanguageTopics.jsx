@@ -11,18 +11,9 @@ function LanguageTopics({ language, topics }) {
   const active = selection.isOpen ? topics[selection.selected] : null
 
   return (
-    <div className="flex min-h-[70vh] gap-10">
-      <div className="flex-1 overflow-y-auto">
-        {active ? (
-          <GrammarPanel language={language} topic={active} />
-        ) : (
-          <div className="flex h-full items-center justify-center text-gray">
-            Pick a topic on the right →
-          </div>
-        )}
-      </div>
-
-      <ul className="flex w-2/5 flex-col items-end gap-2 self-start border-r-2 border-borders pr-2">
+    <div className="flex min-h-[70vh] flex-col gap-6 md:flex-row md:gap-10">
+      {/* topic list — full width on mobile, right rail on desktop */}
+      <ul className="flex flex-col items-end gap-2 self-start border-r-2 border-borders pr-2 md:order-last md:w-2/5">
         {topics.map((t, i) => (
           <Flag
             key={t.slug || t.title}
@@ -34,6 +25,16 @@ function LanguageTopics({ language, topics }) {
           />
         ))}
       </ul>
+
+      <div className="flex-1 overflow-y-auto">
+        {active ? (
+          <GrammarPanel language={language} topic={active} />
+        ) : (
+          <div className="hidden items-center justify-center text-gray md:flex md:h-full">
+            Pick a topic on the right →
+          </div>
+        )}
+      </div>
     </div>
   )
 }

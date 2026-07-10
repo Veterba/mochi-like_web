@@ -1,14 +1,20 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useAuth } from "../hooks/useAuth.jsx"
 
-const items = [
+const navItems = [
   { label: "languages", to: "/languages" },
   { label: "flashcards", to: "/flashcards" },
+  { label: "tutor", to: "/tutor" },
   { label: "profile", to: "/profile" },
+  { label: "blog", to: "#blog", isHash: true },
 ]
 
-function Burger() {
+function Burger({ onAuthClick }) {
   const [isOpen, setIsOpen] = useState(false)
+  const { user, logout } = useAuth()
+
+  const close = () => setIsOpen(false)
 
   return (
     <div className="relative">
@@ -25,28 +31,64 @@ function Burger() {
 
       {isOpen && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0 z-40" onClick={close} />
           <ul className="absolute left-0 top-full z-50 mt-4 border border-borders bg-background">
-            {items.map((item) => (
-              <li key={item.label}>
-                {item.to ? (
+            {navItems.map((item) =>
+              item.isHash ? (
+                <li key={item.label}>
+                  <a
+                    href={item.to}
+                    onClick={close}
+                    className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ) : (
+                <li key={item.label}>
                   <Link
                     to={item.to}
-                    onClick={() => setIsOpen(false)}
+                    onClick={close}
                     className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
                   >
                     {item.label}
                   </Link>
-                ) : (
+                </li>
+              )
+            )}
+            {/* auth section */}
+            {user ? (
+              <>
+                <li>
+                  <Link
+                    to="/profile"
+                    onClick={close}
+                    className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
+                  >
+                    {user.nickname}
+                  </Link>
+                </li>
+                <li>
                   <button
                     type="button"
-                    className="w-full px-6 py-2 text-left text-text hover:bg-text hover:text-background"
+                    onClick={() => { logout(); close() }}
+                    className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
                   >
-                    {item.label}
+                    logout
                   </button>
-                )}
+                </li>
+              </>
+            ) : (
+              <li>
+                <button
+                  type="button"
+                  onClick={() => { onAuthClick?.(); close() }}
+                  className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
+                >
+                  auth
+                </button>
               </li>
-            ))}
+            )}
           </ul>
         </>
       )}

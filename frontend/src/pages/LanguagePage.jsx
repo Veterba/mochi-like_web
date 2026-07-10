@@ -32,14 +32,14 @@ function LanguagePage() {
   return (
     <div>
       <Navbar sticky />
-      <section className="px-8 py-12">
+      <section className="px-4 py-8 md:px-8 md:py-12">
         <Link
           to="/languages"
           className="text-xs uppercase tracking-widest text-gray hover:underline"
         >
           ← Languages
         </Link>
-        <h1 className="mt-4 text-5xl font-black uppercase tracking-tight">{name}</h1>
+        <h1 className="mt-4 text-4xl font-black uppercase tracking-tight md:text-5xl">{name}</h1>
         {status && (
           <p className="mt-2 text-sm uppercase tracking-widest text-gray">currently · {status}</p>
         )}

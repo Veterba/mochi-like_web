@@ -12,7 +12,7 @@ function Profile() {
   return (
     <div className="min-h-screen bg-third-background">
       <Navbar sticky />
-      <section className="mx-auto px-6 py-12">
+      <section className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
         <div className="grid gap-8 md:grid-cols-[260px_1fr]">
           <ProfileHeader />
           <div className="flex flex-col gap-8">
