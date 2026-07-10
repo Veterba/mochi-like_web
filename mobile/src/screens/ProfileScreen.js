@@ -45,7 +45,7 @@ function ProfileInner({ navigation }) {
   };
 
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 24, paddingTop: insets.top + 24 }}>
+    <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 24, paddingTop: insets.top + 24, paddingBottom: 100 }}>
       {/* Header card */}
       <View className="border-2 border-borders p-4 mb-4 flex-row items-center gap-4">
         {avatar ? (

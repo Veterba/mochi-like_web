@@ -81,7 +81,7 @@ export default function TopicScreen({ route, navigation }) {
         keyExtractor={(item) => (item._add ? '_add' : item.id)}
         numColumns={3}
         renderItem={renderItem}
-        contentContainerStyle={{ padding: 12 }}
+        contentContainerStyle={{ padding: 12, paddingBottom: 100 }}
         ListHeaderComponent={
           <View style={{ marginBottom: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Text style={{ color: '#989c9a', fontSize: 10, textTransform: 'uppercase', letterSpacing: 2 }}>

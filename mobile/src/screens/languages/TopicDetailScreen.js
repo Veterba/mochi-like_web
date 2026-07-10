@@ -7,7 +7,7 @@ export default function TopicDetailScreen({ route }) {
   const accent = accentHex[accentKey] ?? '#1c1e24';
 
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 24, paddingBottom: 48 }}>
+    <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 24, paddingBottom: 100 }}>
       <Text className="text-gray text-xs uppercase tracking-widest mb-2">grammar · {language}</Text>
       <Text className="text-text text-3xl font-black uppercase tracking-tight mb-6">
         {topic.title}

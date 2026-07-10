@@ -110,11 +110,7 @@ function TutorInner() {
   };
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-background"
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={tabBarHeight}
-    >
+    <View className="flex-1 bg-background">
       <View style={{ paddingTop: insets.top + 12, paddingHorizontal: 24 }}>
         <Text className="text-3xl font-bold uppercase text-text tracking-widest mb-3">TUTOR</Text>
 
@@ -151,6 +147,11 @@ function TutorInner() {
         </ScrollView>
       </View>
 
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={tabBarHeight}
+      >
       {/* Messages */}
       {activeChatId ? (
         <FlatList
@@ -188,7 +189,7 @@ function TutorInner() {
 
       {/* Input bar */}
       {activeChatId ? (
-        <View style={{ paddingHorizontal: 24, paddingBottom: 12 }}>
+        <View style={{ paddingHorizontal: 24, paddingBottom: tabBarHeight }}>
           {error ? (
             <Text className="text-accent-2 text-xs font-bold mb-2">{error}</Text>
           ) : null}
@@ -228,6 +229,7 @@ function TutorInner() {
           </View>
         </View>
       ) : null}
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }

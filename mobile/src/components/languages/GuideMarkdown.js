@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text } from 'react-native';
 
 // Minimal renderer for the guide markdown subset (see assets/guides/*.js):
 // ## sections, paragraphs, "- " lists (one nesting level), pipe tables and
@@ -106,29 +106,29 @@ function parseBlocks(md) {
 
 // --- blocks -----------------------------------------------------------------
 
+// Columns share the screen width (flex) instead of fixed widths, so tables
+// fit without horizontal scrolling. Text wraps inside each cell.
 function TableBlock({ rows }) {
   const [header, ...body] = rows;
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
-      <View style={{ borderWidth: 2, borderColor: BORDER }}>
-        <View style={{ flexDirection: 'row', borderBottomWidth: 2, borderBottomColor: BORDER, backgroundColor: '#EFEDEA' }}>
-          {header.map((cell, c) => (
-            <View key={c} style={{ minWidth: 96, maxWidth: 200, paddingVertical: 6, paddingHorizontal: 8 }}>
-              {renderInline(cell, { color: TEXT, fontSize: 11, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 0.5 })}
-            </View>
-          ))}
-        </View>
-        {body.map((row, r) => (
-          <View key={r} style={{ flexDirection: 'row', borderTopWidth: r === 0 ? 0 : 1, borderTopColor: '#D8D5DB' }}>
-            {row.map((cell, c) => (
-              <View key={c} style={{ minWidth: 96, maxWidth: 200, paddingVertical: 6, paddingHorizontal: 8 }}>
-                {renderInline(cell, { color: TEXT, fontSize: 13, lineHeight: 19 })}
-              </View>
-            ))}
+    <View style={{ borderWidth: 2, borderColor: BORDER, marginBottom: 16 }}>
+      <View style={{ flexDirection: 'row', borderBottomWidth: 2, borderBottomColor: BORDER, backgroundColor: '#EFEDEA' }}>
+        {header.map((cell, c) => (
+          <View key={c} style={{ flex: 1, paddingVertical: 5, paddingHorizontal: 6, borderLeftWidth: c === 0 ? 0 : 1, borderLeftColor: '#D8D5DB' }}>
+            {renderInline(cell, { color: TEXT, fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 0.3 })}
           </View>
         ))}
       </View>
-    </ScrollView>
+      {body.map((row, r) => (
+        <View key={r} style={{ flexDirection: 'row', borderTopWidth: r === 0 ? 0 : 1, borderTopColor: '#D8D5DB' }}>
+          {row.map((cell, c) => (
+            <View key={c} style={{ flex: 1, paddingVertical: 5, paddingHorizontal: 6, borderLeftWidth: c === 0 ? 0 : 1, borderLeftColor: '#D8D5DB' }}>
+              {renderInline(cell, { color: TEXT, fontSize: 11, lineHeight: 16 })}
+            </View>
+          ))}
+        </View>
+      ))}
+    </View>
   );
 }
 

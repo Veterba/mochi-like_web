@@ -5,7 +5,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { BlurView } from 'expo-blur';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AuthProvider, useAuth } from './src/hooks/useAuth';
@@ -43,7 +44,7 @@ function LanguagesStack() {
       <LangStack.Screen
         name="LanguageTopics"
         component={LanguageTopicsScreen}
-        options={({ route }) => ({ title: route.params?.name ?? 'Language', headerLargeTitle: true })}
+        options={({ route }) => ({ title: route.params?.name ?? 'Language' })}
       />
       <LangStack.Screen name="TopicDetail" component={TopicDetailScreen} options={({ route }) => ({ title: route.params?.topic?.title ?? 'Topic' })} />
     </LangStack.Navigator>
@@ -66,7 +67,7 @@ function FlashcardsStack() {
   return (
     <DecksProvider>
       <FlashStack.Navigator screenOptions={{ ...HEADER_OPTS, headerShown: true }}>
-        <FlashStack.Screen name="FlashcardsHome" component={FlashcardsHomeScreen} options={{ title: 'Flashcards', headerLargeTitle: true }} />
+        <FlashStack.Screen name="FlashcardsHome" component={FlashcardsHomeScreen} options={{ title: 'Flashcards' }} />
         <FlashStack.Screen name="Topic" component={TopicScreen} options={({ route }) => ({ title: route.params?.name ?? 'Topic' })} />
         <FlashStack.Screen name="Shuffle" component={ShuffleScreen} options={({ route }) => ({ title: route.params?.name ?? 'Shuffle' })} />
       </FlashStack.Navigator>
@@ -86,11 +87,20 @@ function AppTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        // Glassy translucent tab bar: it floats over content (position
+        // absolute) with a blur behind it, iOS-style. Screens add bottom
+        // padding so their last items aren't hidden underneath.
         tabBarStyle: {
-          backgroundColor: '#F9F7F5',
+          position: 'absolute',
           borderTopColor: '#1c1e24',
           borderTopWidth: 2,
+          backgroundColor: Platform.OS === 'ios' ? 'transparent' : '#F9F7F5',
+          elevation: 0,
         },
+        tabBarBackground: () =>
+          Platform.OS === 'ios' ? (
+            <BlurView tint="light" intensity={40} style={StyleSheet.absoluteFill} />
+          ) : null,
         tabBarActiveTintColor: '#1B1717',
         tabBarInactiveTintColor: '#989c9a',
         tabBarLabelStyle: {

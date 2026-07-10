@@ -35,7 +35,7 @@ export default function FlashcardsHomeScreen({ navigation }) {
 
   return (
     <View className="flex-1 bg-background">
-      <ScrollView contentContainerStyle={{ padding: 24, paddingTop: 16 }}>
+      <ScrollView contentContainerStyle={{ padding: 24, paddingTop: 16, paddingBottom: 100 }}>
         {loading ? (
           <ActivityIndicator color="#1B1717" style={{ marginTop: 40 }} />
         ) : folders.length === 0 ? (
