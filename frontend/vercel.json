@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://popup-0anh.onrender.com/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
