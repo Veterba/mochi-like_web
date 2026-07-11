@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next"
 import { XIcon } from "../flashcards/Icons.jsx"
 import useEditProfileForm from "../../hooks/useEditProfileForm.js"
 
 function EditProfile({ nickname, avatar, onSave, onClose }) {
+  const { t } = useTranslation()
   const form = useEditProfileForm({ nickname, avatar })
 
   return (
@@ -20,7 +22,7 @@ function EditProfile({ nickname, avatar, onSave, onClose }) {
         >
           <XIcon />
         </button>
-        <h3 className="mb-6 text-sm uppercase tracking-widest text-gray">Edit profile</h3>
+        <h3 className="mb-6 text-sm uppercase tracking-widest text-gray">{t("profile.editTitle")}</h3>
 
         <div className="flex flex-col items-center gap-3">
           {form.avatar ? (
@@ -29,7 +31,7 @@ function EditProfile({ nickname, avatar, onSave, onClose }) {
             <div className="h-24 w-24 border border-borders bg-third-background" />
           )}
           <label className="cursor-pointer border border-borders px-3 py-1 text-xs uppercase hover:bg-text hover:text-background">
-            Change photo
+            {t("profile.changePhoto")}
             <input
               type="file"
               accept="image/*"
@@ -39,7 +41,7 @@ function EditProfile({ nickname, avatar, onSave, onClose }) {
           </label>
         </div>
 
-        <label className="mt-6 block text-xs uppercase tracking-widest text-gray">Nickname</label>
+        <label className="mt-6 block text-xs uppercase tracking-widest text-gray">{t("profile.nickname")}</label>
         <input
           value={form.nickname}
           onChange={(e) => form.setNickname(e.target.value)}
@@ -52,14 +54,14 @@ function EditProfile({ nickname, avatar, onSave, onClose }) {
             onClick={() => onSave({ nickname: form.nickname.trim() || "Guest", avatar: form.avatar })}
             className="flex-1 border border-borders px-4 py-2 text-sm uppercase hover:bg-text hover:text-background"
           >
-            Save
+            {t("profile.save")}
           </button>
           <button
             type="button"
             onClick={onClose}
             className="flex-1 border border-borders px-4 py-2 text-sm uppercase text-gray hover:bg-third-background"
           >
-            Cancel
+            {t("profile.cancel")}
           </button>
         </div>
       </div>

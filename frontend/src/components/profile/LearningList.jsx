@@ -1,25 +1,27 @@
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 function LearningList({ statuses }) {
+  const { t } = useTranslation()
   const entries = Object.entries(statuses)
   const learning = entries.filter(([, s]) => s === "learning")
   const completed = entries.filter(([, s]) => s === "completed")
 
   return (
     <div className="border border-borders p-6">
-      <h3 className="mb-4 text-sm uppercase tracking-widest text-gray">Learning</h3>
+      <h3 className="mb-4 text-sm uppercase tracking-widest text-gray">{t("profile.learningTitle")}</h3>
       {entries.length === 0 ? (
         <p className="text-sm text-gray">
-          Nothing yet.{" "}
+          {t("profile.nothingYet")}{" "}
           <Link to="/languages" className="underline">
-            Pick a language →
+            {t("profile.pickLanguage")}
           </Link>
         </p>
       ) : (
         <div className="flex flex-col gap-4">
           <div>
             <span className="text-xs uppercase tracking-widest text-accent-1">
-              Currently learning · {learning.length}
+              {t("profile.currentlyLearning")} · {learning.length}
             </span>
             <div className="mt-2 flex flex-wrap gap-2">
               {learning.map(([name]) => (
@@ -36,7 +38,7 @@ function LearningList({ statuses }) {
           {completed.length > 0 && (
             <div>
               <span className="text-xs uppercase tracking-widest text-accent-3">
-                Completed · {completed.length}
+                {t("profile.completedLabel")} · {completed.length}
               </span>
               <div className="mt-2 flex flex-wrap gap-2">
                 {completed.map(([name]) => (

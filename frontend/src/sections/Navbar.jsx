@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import NavLinkRight from "../components/Navlinks.jsx"
 import Burger from "../components/Burger.jsx"
 import Auth from "../components/Auth.jsx"
+import LanguageSwitcher from "../components/LanguageSwitcher.jsx"
 
 function Navbar({ sticky = false }) {
   const [isAuthOpen, setIsAuthOpen] = useState(false)
@@ -14,7 +15,10 @@ function Navbar({ sticky = false }) {
         sticky ? " sticky top-0 z-40" : ""
       }`}
     >
-      <Burger onAuthClick={() => setIsAuthOpen(true)} />
+      <div className="flex items-center gap-3">
+        <Burger onAuthClick={() => setIsAuthOpen(true)} />
+        <LanguageSwitcher />
+      </div>
       <div className="mx-auto w-30">
         <Link to="/" className="text-center">
           <h1>pop up</h1>

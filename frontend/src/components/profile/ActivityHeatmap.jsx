@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { dateKey } from "../../hooks/useActivity.js"
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -25,6 +26,7 @@ function buildWeeks() {
 }
 
 function ActivityHeatmap({ days }) {
+  const { t } = useTranslation()
   const active = new Set(days)
   const weeks = buildWeeks()
 
@@ -43,9 +45,9 @@ function ActivityHeatmap({ days }) {
   return (
     <div className="border border-borders p-6">
       <div className="mb-4 flex items-baseline justify-between">
-        <h3 className="text-sm uppercase tracking-widest text-gray">Activity</h3>
+        <h3 className="text-sm uppercase tracking-widest text-gray">{t("profile.activityTitle")}</h3>
         <span className="text-xs text-gray">
-          Total active days: <span className="text-text">{active.size}</span>
+          {t("profile.totalActiveDays")}: <span className="text-text">{active.size}</span>
         </span>
       </div>
 

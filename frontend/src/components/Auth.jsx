@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth.jsx'
 
 function Field({ label, type = 'text', value, onChange, ...props }) {
@@ -17,6 +18,7 @@ function Field({ label, type = 'text', value, onChange, ...props }) {
 }
 
 function Auth({ isOpen, onClose }) {
+  const { t } = useTranslation()
   const { signup, login, verify, resend } = useAuth()
   const [mode, setMode] = useState('login')
   const [form, setForm] = useState({ identifier: '', email: '', login: '', password: '', verify: '' })
@@ -65,7 +67,7 @@ function Auth({ isOpen, onClose }) {
     }
 
     if (isSignup && form.password !== form.verify) {
-      setError('Passwords do not match')
+      setError(t('auth.passwordsNoMatch'))
       return
     }
     setPending(true)
@@ -84,7 +86,7 @@ function Auth({ isOpen, onClose }) {
           await resend(id).catch(() => {})
           switchToVerify(id)
         } else {
-          setError('Email not verified — sign up email required')
+          setError(t('auth.notVerified'))
         }
       } else {
         setError(err.message)
@@ -110,27 +112,27 @@ function Auth({ isOpen, onClose }) {
           onClick={onClose}
           className="absolute right-4 top-4 text-text hover:text-gray"
         >
-          x
+          {t('auth.close')}
         </button>
 
         <div className="flex flex-col gap-6">
           <div className="text-center">
             <h2 className="text-2xl font-semibold text-text">
-              {isVerify ? 'Verify your email' : isSignup ? 'Create account' : 'Welcome back'}
+              {isVerify ? t('auth.verifyTitle') : isSignup ? t('auth.signupTitle') : t('auth.loginTitle')}
             </h2>
             <p className="mt-1 text-sm text-gray">
               {isVerify
-                ? `We sent a 6-digit code to ${verifyEmail}`
+                ? t('auth.verifySub', { email: verifyEmail })
                 : isSignup
-                ? 'Sign up to get started'
-                : 'Log in to continue'}
+                ? t('auth.signupSub')
+                : t('auth.loginSub')}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {isVerify ? (
               <Field
-                label="Verification code"
+                label={t('auth.codeLabel')}
                 type="text"
                 inputMode="numeric"
                 maxLength={6}
@@ -139,18 +141,18 @@ function Auth({ isOpen, onClose }) {
               />
             ) : isSignup ? (
               <>
-                <Field label="Email" type="email" value={form.email} onChange={set('email')} />
-                <Field label="Login" value={form.login} onChange={set('login')} />
+                <Field label={t('auth.emailLabel')} type="email" value={form.email} onChange={set('email')} />
+                <Field label={t('auth.loginLabel')} value={form.login} onChange={set('login')} />
                 <div className="flex flex-col gap-1">
-                  <Field label="Password" type="password" value={form.password} onChange={set('password')} />
-                  <p className="text-xs text-gray">At least 8 characters, one uppercase letter, one lowercase letter and one digit</p>
+                  <Field label={t('auth.passwordLabel')} type="password" value={form.password} onChange={set('password')} />
+                  <p className="text-xs text-gray">{t('auth.passwordHint')}</p>
                 </div>
-                <Field label="Verify password" type="password" value={form.verify} onChange={set('verify')} />
+                <Field label={t('auth.verifyPasswordLabel')} type="password" value={form.verify} onChange={set('verify')} />
               </>
             ) : (
               <>
-                <Field label="Email or login" value={form.identifier} onChange={set('identifier')} />
-                <Field label="Password" type="password" value={form.password} onChange={set('password')} />
+                <Field label={t('auth.identifierLabel')} value={form.identifier} onChange={set('identifier')} />
+                <Field label={t('auth.passwordLabel')} type="password" value={form.password} onChange={set('password')} />
               </>
             )}
 
@@ -161,7 +163,7 @@ function Auth({ isOpen, onClose }) {
               disabled={pending}
               className="mt-2 border border-borders bg-text py-3 font-medium text-background transition hover:bg-background hover:text-text disabled:opacity-50"
             >
-              {isVerify ? 'Confirm' : isSignup ? 'Sign up' : 'Log in'}
+              {isVerify ? t('auth.confirm') : isSignup ? t('auth.signup') : t('auth.login')}
             </button>
 
             {isVerify && (
@@ -171,22 +173,22 @@ function Auth({ isOpen, onClose }) {
                   onClick={handleResend}
                   className="text-sm text-gray hover:text-text"
                 >
-                  Resend code
+                  {t('auth.resend')}
                 </button>
-                {resentMsg && <span className="ml-2 text-sm text-gray">Sent!</span>}
+                {resentMsg && <span className="ml-2 text-sm text-gray">{t('auth.sent')}</span>}
               </div>
             )}
           </form>
 
           {!isVerify && (
             <p className="text-center text-sm text-gray">
-              {isSignup ? 'Already have an account?' : 'No account yet?'}{' '}
+              {isSignup ? t('auth.haveAccount') : t('auth.noAccount')}{' '}
               <button
                 type="button"
                 onClick={() => setMode(isSignup ? 'login' : 'signup')}
                 className="font-semibold text-text underline-offset-2 hover:underline"
               >
-                {isSignup ? 'Log in' : 'Sign up'}
+                {isSignup ? t('auth.login') : t('auth.signup')}
               </button>
             </p>
           )}

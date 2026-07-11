@@ -1,18 +1,17 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { useAuth } from "../hooks/useAuth.jsx"
 
 const navItems = [
-  { label: "languages", to: "/languages" },
-  { label: "flashcards", to: "/flashcards" },
-  { label: "tutor", to: "/tutor" },
-  { label: "profile", to: "/profile" },
-  { label: "blog", to: "#blog", isHash: true },
+  { key: "languages", to: "/languages" },
+  { key: "flashcards", to: "/flashcards" },
 ]
 
 function Burger({ onAuthClick }) {
   const [isOpen, setIsOpen] = useState(false)
   const { user, logout } = useAuth()
+  const { t } = useTranslation()
 
   const close = () => setIsOpen(false)
 
@@ -35,23 +34,23 @@ function Burger({ onAuthClick }) {
           <ul className="absolute left-0 top-full z-50 mt-4 border border-borders bg-background">
             {navItems.map((item) =>
               item.isHash ? (
-                <li key={item.label}>
+                <li key={item.key}>
                   <a
                     href={item.to}
                     onClick={close}
                     className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
                   >
-                    {item.label}
+                    {t(`nav.${item.key}`)}
                   </a>
                 </li>
               ) : (
-                <li key={item.label}>
+                <li key={item.key}>
                   <Link
                     to={item.to}
                     onClick={close}
                     className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
                   >
-                    {item.label}
+                    {t(`nav.${item.key}`)}
                   </Link>
                 </li>
               )
@@ -74,7 +73,7 @@ function Burger({ onAuthClick }) {
                     onClick={() => { logout(); close() }}
                     className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
                   >
-                    logout
+                    {t("nav.logout")}
                   </button>
                 </li>
               </>
@@ -85,7 +84,7 @@ function Burger({ onAuthClick }) {
                   onClick={() => { onAuthClick?.(); close() }}
                   className="block w-full px-4 py-4 text-left text-text hover:bg-text hover:text-background"
                 >
-                  auth
+                  {t("nav.auth")}
                 </button>
               </li>
             )}
