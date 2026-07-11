@@ -11,20 +11,20 @@ function Navbar({ sticky = false }) {
 
   return (
     <nav
-      className={`flex justify-between border-b border-borders bg-background py-4 px-4 md:px-12 text-text${
+      className={`grid grid-cols-3 items-center border-b border-borders bg-background py-4 px-4 md:px-12 text-text${
         sticky ? " sticky top-0 z-40" : ""
       }`}
     >
-      <div className="flex items-center gap-3">
-        <Burger onAuthClick={() => setIsAuthOpen(true)} />
+      <div className="flex items-center gap-3 justify-self-start">
+        <Burger />
         <LanguageSwitcher />
       </div>
-      <div className="mx-auto w-30">
+      <div className="justify-self-center">
         <Link to="/" className="text-center">
           <h1>pop up</h1>
         </Link>
       </div>
-      <div className="hidden md:block">
+      <div className="hidden justify-self-end md:block">
         <NavLinkRight onAuthClick={() => setIsAuthOpen(true)} />
       </div>
       <Auth isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />

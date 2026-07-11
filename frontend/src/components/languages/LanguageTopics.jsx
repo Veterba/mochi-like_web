@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { accents } from "../../assets/data.js"
 import usePopup from "../../hooks/usePopup.js"
 import Flag from "./Flag.jsx"
@@ -7,6 +8,7 @@ import GrammarPanel from "./GrammarPanel.jsx"
 // topic's lesson. Works for any language with a parsed guide (see
 // assets/guides/index.js). `selection.selected` holds the topic index.
 function LanguageTopics({ language, topics }) {
+  const { t } = useTranslation()
   const selection = usePopup()
   const active = selection.isOpen ? topics[selection.selected] : null
 
@@ -31,7 +33,7 @@ function LanguageTopics({ language, topics }) {
           <GrammarPanel language={language} topic={active} />
         ) : (
           <div className="hidden items-center justify-center text-gray md:flex md:h-full">
-            Pick a topic on the right →
+            {t("languagePage.pickTopic")}
           </div>
         )}
       </div>

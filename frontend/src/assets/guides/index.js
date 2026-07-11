@@ -11,6 +11,10 @@ import ja from './ja.md?raw'
 import zh from './zh.md?raw'
 import ar from './ar.md?raw'
 
+// Russian-interface variants (target language unchanged, explanations in RU).
+import enRu from './en.ru.md?raw'
+import noRu from './no.ru.md?raw'
+
 // Splits a guide into topics: every `# Heading <!-- slug: x -->` starts a
 // topic; everything until the next `#` is that topic's markdown body.
 // Slug comments are stripped — they are stable IDs for future features
@@ -47,4 +51,19 @@ export const guides = {
   japanese: parseGuide(ja),
   chinese: parseGuide(zh),
   arabic: parseGuide(ar),
+}
+
+// Russian-interface variants: same target language, explanations in Russian.
+// Add a slug here as its `<slug>.ru.md` guide is translated.
+export const guidesByInterface = {
+  ru: {
+    english: parseGuide(enRu),
+    norwegian: parseGuide(noRu),
+  },
+}
+
+// Pick the guide whose explanations match the interface language, falling
+// back to the canonical (English-interface) guide when no variant exists.
+export function getGuide(slug, lng) {
+  return guidesByInterface[lng]?.[slug] ?? guides[slug]
 }

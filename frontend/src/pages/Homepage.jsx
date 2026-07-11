@@ -1,9 +1,12 @@
+import { useTranslation } from 'react-i18next'
 import Navbar from '../sections/Navbar.jsx'
 import Hero from '../sections/Hero.jsx'
 import LangCards from '../sections/LangCards.jsx'
-import { sections } from '../assets/data.js'
 
 function Homepage() {
+  const { t } = useTranslation()
+  const sections = t('home.sections', { returnObjects: true })
+
   return (
     <div>
       <Navbar sticky />
@@ -11,7 +14,7 @@ function Homepage() {
       <LangCards />
 
       {sections.map((s) => (
-        <section key={s.id} className="border-t border-borders bg-background px-4 py-12 md:px-6 md:py-20 text-text">
+        <section key={s.heading} className="border-t border-borders bg-background px-4 py-12 md:px-6 md:py-20 text-text">
           <div className="mx-auto max-w-5xl">
             <h2 className="text-4xl font-black uppercase tracking-tight sm:text-5xl">
               {s.heading}
@@ -21,16 +24,16 @@ function Homepage() {
                 <p key={p}>{p}</p>
               ))}
               <a
-                href={s.link.href}
+                href="#auth"
                 className="inline-block font-semibold text-text underline-offset-2 hover:underline"
               >
-                {s.link.label} →
+                {s.linkLabel} →
               </a>
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="flex items-center justify-center border-2 border-borders bg-third-background text-sm uppercase tracking-widest text-gray">
-                video
+                {t('home.video')}
               </div>
               <div className="flex flex-col gap-6">
                 {s.cards.map((c) => (

@@ -1,5 +1,6 @@
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { useTranslation } from 'react-i18next'
 
 // Brutalist markdown mapping: sharp borders, theme colors, no rounding.
 const components = {
@@ -28,9 +29,10 @@ const components = {
 // Left-side detail for whichever flag is targeted: the full lesson,
 // rendered from the language guide's markdown.
 function GrammarPanel({ language, topic }) {
+  const { t } = useTranslation()
   return (
     <div>
-      <p className="text-xs uppercase tracking-widest text-gray">grammar · {language}</p>
+      <p className="text-xs uppercase tracking-widest text-gray">{t('languagePage.grammarLabel')} · {language}</p>
       <h2 className="mt-2 text-3xl font-black uppercase tracking-tight">{topic.title}</h2>
       <div className="mt-4 max-w-2xl text-text">
         <Markdown remarkPlugins={[remarkGfm]} components={components}>
