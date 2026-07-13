@@ -45,22 +45,15 @@ function Burger({ onAuthClick }) {
 
             {/* On mobile the right-side nav is hidden, so mirror it here. */}
             {user ? (
-              <>
-                <li className="md:hidden">
-                  <Link to="/profile" onClick={close} className={itemClass}>
-                    {user.nickname}
-                  </Link>
-                </li>
-                <li className="md:hidden">
-                  <button
-                    type="button"
-                    onClick={() => { logout(); close() }}
-                    className={itemClass}
-                  >
-                    {t("nav.logout")}
-                  </button>
-                </li>
-              </>
+              <li className="md:hidden">
+                <button
+                  type="button"
+                  onClick={() => { logout(); close() }}
+                  className={itemClass}
+                >
+                  {t("nav.logout")}
+                </button>
+              </li>
             ) : (
               <li className="md:hidden">
                 <button
