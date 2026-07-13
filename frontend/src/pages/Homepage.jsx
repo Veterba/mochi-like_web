@@ -23,12 +23,6 @@ function Homepage() {
               {s.paragraphs.map((p) => (
                 <p key={p}>{p}</p>
               ))}
-              <a
-                href="#auth"
-                className="inline-block font-semibold text-text underline-offset-2 hover:underline"
-              >
-                {s.linkLabel} →
-              </a>
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
