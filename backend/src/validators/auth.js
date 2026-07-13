@@ -17,12 +17,3 @@ export const loginSchema = Joi.object({
   identifier: Joi.string().required(),
   password: Joi.string().required()
 })
-
-export const verifySchema = Joi.object({
-  email: Joi.string().email().required(),
-  code: Joi.string().pattern(/^\d{6}$/).required()
-})
-
-export const resendSchema = Joi.object({
-  email: Joi.string().email().required()
-})

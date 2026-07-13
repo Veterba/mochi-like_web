@@ -16,7 +16,9 @@ export function AuthProvider({ children }) {
   }, [])
 
   const signup = async (form) => {
-    return await api('/auth/signup', { method: 'POST', body: form })
+    const res = await api('/auth/signup', { method: 'POST', body: form })
+    setUser(res.user)
+    return res
   }
 
   const login = async (form) => {
@@ -25,23 +27,13 @@ export function AuthProvider({ children }) {
     return res
   }
 
-  const verify = async (email, code) => {
-    const res = await api('/auth/verify', { method: 'POST', body: { email, code } })
-    setUser(res.user)
-    return res
-  }
-
-  const resend = async (email) => {
-    return await api('/auth/resend', { method: 'POST', body: { email } })
-  }
-
   const logout = async () => {
     await api('/auth/logout', { method: 'POST' })
     setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, ready, signup, login, logout, verify, resend }}>
+    <AuthContext.Provider value={{ user, ready, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
