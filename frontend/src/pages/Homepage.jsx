@@ -26,9 +26,6 @@ function Homepage() {
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="flex items-center justify-center border-2 border-borders bg-third-background text-sm uppercase tracking-widest text-gray">
-                {t('home.video')}
-              </div>
               <div className="flex flex-col gap-6">
                 {s.cards.map((c) => (
                   <div key={c.title} className="border border-borders p-6">
